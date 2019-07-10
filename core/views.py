@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, CreateView, DetailView
 
-from core.models import Player, Score, TournamentManager, Game, Tournament, Points, Match
+from core.models import Player, Score, TournamentManager, Game, Tournament, Points, Match, KeyValue
 
 
 class IndexView(TemplateView):
@@ -28,6 +28,7 @@ class IndexView(TemplateView):
         context["has_tiebreak_points"] = False
         context["points"] = Points.objects.all().order_by("-points")
         context["divisions_active"] = False
+        context["qualification_rules"] = KeyValue.objects.get_qualification_rules()
 
         if active_tournament and (active_tournament.number_of_players_in_a_division
                                   or active_tournament.number_of_players_in_b_division):

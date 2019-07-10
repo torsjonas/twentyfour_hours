@@ -4,7 +4,7 @@ from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from core.models import Game, Score, Player, Points, Tournament, Match, MatchPoints
+from core.models import Game, Score, Player, Points, Tournament, Match, MatchPoints, KeyValue
 from django.utils.translation import ugettext as _
 
 
@@ -162,3 +162,4 @@ admin.site.register(Points)
 admin.site.register(Tournament, TournamentAdmin)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(MatchPoints)
+admin.site.register(KeyValue)

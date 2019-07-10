@@ -24,6 +24,12 @@ def get_points_in_dict():
         points[point.position] = point.points
     return points
 
+class KeyValueManager(models.Manager):
+
+    def get_qualification_rules(self):
+        return get_object_or_None(KeyValue, key="qualification_rules")
+
+
 class TournamentManager(models.Manager):
 
     def fix_and_sort_standings(self, standings, points, game_scores, division=None):
@@ -404,3 +410,15 @@ class MatchPoints(models.Model):
 
     def __str__(self):
         return str(self.points)
+
+
+class KeyValue(models.Model):
+    key = models.CharField(max_length=255, null=False, blank=False)
+    value = models.TextField(max_length=49152, null=False, blank=False)
+
+    objects = KeyValueManager()
+
+    def __str__(self):
+        return self.key
+
+
