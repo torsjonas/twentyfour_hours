@@ -23,6 +23,27 @@ def inactivate_games(modeladmin, request, queryset):
 
 inactivate_games.short_description = _("Inactivate selected games")
 
+class BaseAdmin(admin.ModelAdmin):
+
+    @property
+    def media(self):
+        media = super().media
+        css = {
+            "all": (
+                "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css",
+            )
+        }
+        js = [
+            "js/admin.js",
+            "js/jquery_fix.js",
+            "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js",
+        ]
+        # somewhat hacky to add this to the "private" lists but the code below doesn't work anymore (with Django > 2.0)
+        media._css_lists.append(css)
+        media._js_lists.append(js)
+        #media.add_css(css)
+        #media.add_js(js)
+        return media
 
 class GameAdmin(ModelAdmin):
     list_display = ("name", "abbreviation", "is_active")
@@ -84,7 +105,7 @@ class TournamentForm(ModelForm):
         fields = "__all__"
 
 
-class TournamentAdmin(ModelAdmin):
+class TournamentAdmin(BaseAdmin):
     form = TournamentForm
     change_list_template = 'core/admin/tournament_change_list.html'
 
@@ -94,14 +115,14 @@ class TournamentAdmin(ModelAdmin):
                     "playoff_matches_are_created")
     list_filter = ("is_active", "playoffs_are_active", "start_date",)
 
-class ScoreAdmin(ModelAdmin):
+class ScoreAdmin(BaseAdmin):
     list_display = ("game", "score", "player", "tournament")
     search_fields = ("game__name", "score", "player__first_name", "player__last_name", "player__initials", "tournament__name")
     list_filter = (('game', admin.RelatedOnlyFieldListFilter), ('player', admin.RelatedOnlyFieldListFilter),
                    ('tournament', admin.RelatedOnlyFieldListFilter),)
 
 
-class PlayerAdmin(ModelAdmin):
+class PlayerAdmin(BaseAdmin):
     list_display = ("initials", "first_name", "last_name", "email", "ifpa_id", "country")
     search_fields = ("initials", "first_name", "last_name", "email", "ifpa_id", "country__name")
     list_filter = (('country', admin.RelatedOnlyFieldListFilter),)
@@ -126,7 +147,7 @@ class MatchForm(ModelForm):
         fields = "__all__"
 
 
-class MatchAdmin(ModelAdmin):
+class MatchAdmin(BaseAdmin):
     list_display = ("player1", "player2", "winner", "tournament", "is_tiebreaker")
     search_fields = ("player1__first_name", "player1__last_name", "player1__initials", "player2__first_name",
                      "player2__last_name", "player2__initials", "tournament__name")
