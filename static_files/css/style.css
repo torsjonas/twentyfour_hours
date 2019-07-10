@@ -26,3 +26,7 @@ tr.spacer > td {
 li.nav-item {
     text-transform: uppercase;
 }
+
+div.center-navbar-container {
+    margin-left: -40px;
+}
