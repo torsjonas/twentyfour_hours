@@ -2,16 +2,16 @@
  TODO
 ******************************************
 
+******************************************
+ FIXAT
+******************************************
+
 - länk till att lägga in matchresultat på:
     http://thefezen.ddns.net:8000/matches/
     ... om man är admin
 
 - visar inte Jörgen Holm från b-divisionen utan tar Alexander Adrian från A istället:
     http://thefezen.ddns.net:8000/?division=B
-
-******************************************
- FIXAT
-******************************************
 
 - om tiebreak-wins finns ska positionen öka med 1:
     http://thefezen.ddns.net:8000/
