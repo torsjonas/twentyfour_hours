@@ -22,3 +22,11 @@ p.help-block {
 tr.spacer > td {
   padding-bottom: 3em;
 }
+
+li.nav-item {
+    text-transform: uppercase;
+}
+
+small.no-transform {
+    text-transform: none !important;
+}
