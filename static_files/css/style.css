@@ -27,6 +27,8 @@ li.nav-item {
     text-transform: uppercase;
 }
 
-div.center-navbar-container {
-    margin-left: -40px;
+@media only screen and (min-width: 600px) {
+    div.center-navbar-container {
+        margin-left: -40px;
+    }
 }
