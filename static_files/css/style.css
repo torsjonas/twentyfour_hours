@@ -26,7 +26,3 @@ tr.spacer > td {
 li.nav-item {
     text-transform: uppercase;
 }
-
-small.no-transform {
-    text-transform: none !important;
-}
