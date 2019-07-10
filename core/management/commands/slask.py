@@ -15,6 +15,12 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **kwargs):
+        tournament = Tournament.objects.get(is_active=True)
+        tournament.playoff_matches_are_created = False
+        tournament.save()
+
+        for match in Match.objects.all():
+            match.delete()
 
         #for match in Match.objects.all():
         #    match.delete()

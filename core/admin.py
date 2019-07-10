@@ -90,8 +90,9 @@ class TournamentAdmin(ModelAdmin):
 
     search_fields = ("name",)
     list_display = ("name", "is_active", "playoffs_are_active", "start_date", "end_date",
-                    "number_of_players_in_a_division", "number_of_players_in_b_division")
-    list_filter = ("is_active", "playoffs_are_active", "start_date", "disable_score_registering")
+                    "number_of_players_in_a_division", "number_of_players_in_b_division",  "disable_score_registering",
+                    "playoff_matches_are_created")
+    list_filter = ("is_active", "playoffs_are_active", "start_date",)
 
 class ScoreAdmin(ModelAdmin):
     list_display = ("game", "score", "player", "tournament")

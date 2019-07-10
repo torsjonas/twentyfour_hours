@@ -142,8 +142,12 @@ def create_playoff_matches(request):
     if tournament and tournament.playoff_matches_are_created:
         messages.add_message(request, messages.ERROR, _("The playoff matches have already been created"))
     else:
-        Match.objects.create_playoff_matches()
-        messages.add_message(request, messages.INFO, _("The playoff matches were created"))
+        matches = Match.objects.create_playoff_matches()
+        if matches:
+            messages.add_message(request, messages.INFO, _("%s playoff matches were created") % len(matches))
+        else:
+            messages.add_message(request, messages.ERROR, _("No playoff matches were created"))
+
     return HttpResponseRedirect(reverse("admin:core_tournament_changelist"))
 
 

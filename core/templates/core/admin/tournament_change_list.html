@@ -4,7 +4,7 @@
 {% block content_title %}
     {% comment %}this was the only block that I could find to override :( {% endcomment %}
     {% if title %}<h1>{{ title }}</h1>{% endif %}
-    {% if TOURNAMENT %}
+    {% if TOURNAMENT.playoffs_are_active and not TOURNAMENT.playoff_matches_are_created %}
         <a href="{% url "create_playoff_matches" %}"><input type="submit" value="{% trans "Create playoff matches for the active tournament" %}" /></a>
     {% endif %}
 {% endblock %}
