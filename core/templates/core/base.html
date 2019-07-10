@@ -44,11 +44,14 @@
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
+                <a class="navbar-brand" href="/"><img src="{% static "img/sunk-brand-logo.png" %}" /></a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="/">
                     {% if not TOURNAMENT.playoffs_are_active %}
-                        {% trans "Home/Standings" %}
+                        {% trans "Standings" %}
                     {% else %}
-                        {% trans "Home/Qualifications" %}
+                        {% trans "Qualifications" %}
                     {% endif %}
                 </a>
             </li>
