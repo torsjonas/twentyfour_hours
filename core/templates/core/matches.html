@@ -12,6 +12,7 @@
     <thead class="thead-dark">
         <tr>
             <th scope="col">{% trans "Player 1" %}</th>
+            <th scope="col"></th>
             <th scope="col">{% trans "Player 2" %}</th>
             <th scope="col">{% trans "Division" %}</th>
             <th scope="col">{% trans "Game" %}</th>
@@ -31,6 +32,7 @@
         {% endifchanged %}
         <tr class="{% cycle 'row1' 'row2' %}">
             <td><a href="{{ match.player1.get_url }}">{{ match.player1.get_initials_and_name }}</a></td>
+            <td><small>{% trans "vs." %}</small></td>
             <td><a href="{{ match.player2.get_url }}">{{ match.player2.get_initials_and_name }}</a></td>
             <td>{{ match.division }}</td>
             <td>{{ match.game }}</td>

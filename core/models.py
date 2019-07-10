@@ -205,7 +205,6 @@ class MatchManager(models.Manager):
 
     def create_playoff_matches(self):
         tournament = get_object_or_None(Tournament, is_active=True)
-        matches = []
 
         if not tournament:
             raise Exception("There's no active tournament")
@@ -239,8 +238,8 @@ class MatchManager(models.Manager):
     def create_and_save_matches(self, standings, tournament):
         matches = []
         for index in range(0, len(standings), 2):
-            player1 = standings[index]["player"]
-            player2 = standings[index + 1]["player"]
+            player1 = standings[index + 1]["player"]
+            player2 = standings[index]["player"]
             # create random playoff matches then
             for game in Game.objects.filter(is_active=True).order_by('?')[:tournament.number_of_playoff_matches]:
                 match = Match()
