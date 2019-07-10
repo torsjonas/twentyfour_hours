@@ -109,6 +109,7 @@
         </table>
     {% endif %}
 
+    <div class="spacer"></div>
     {% if not request.GET.division %}
         {% include "core/includes/game_scores.html" with game_scores=game_scores %}
     {% endif %}
