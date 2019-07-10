@@ -12,9 +12,9 @@
     {% endif %}
     {% if not request.GET.division %}
         {% if not TOURNAMENT.playoffs_are_active %}
-            <h1>{% trans "Current standings in" %} {{ active_tournament.name }}</h1>
+            <h1>{% trans "Standings in" %} {{ active_tournament.name }}</h1>
         {% else %}
-            <h1>{% trans "Current qualification standings in" %} {{ active_tournament.name }}</h1>
+            <h1>{% trans "Qualification standings in" %} {{ active_tournament.name }}</h1>
         {% endif %}
         <div class="alert alert-primary" role="alert">
             <h4>{% trans "Info" %}</h4>
