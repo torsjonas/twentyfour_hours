@@ -118,7 +118,7 @@ class ScoreCreateView(CreateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         tournament = get_object_or_None(Tournament, is_active=True)
-        if tournament.disable_score_registering:
+        if tournament and tournament.disable_score_registering:
             if not self.request.user.is_staff:
                 raise PermissionDenied()
         context["active_tournament"] = tournament

@@ -39,16 +39,19 @@ class TournamentManager(models.Manager):
                     standings[score.player.id][position] += 1
                     position += 1
 
-        n = list(points.keys())[-1]
-        sorting_method = itemgetter('total_points', 'tiebreak_points', 'player_id', *range(1, n + 1))
-        sorted_player_ids = reversed(sorted(standings, key=lambda x: sorting_method(standings[x])))
+        position_standings = []
 
-        sorted_standings = []
-        for player_id in sorted_player_ids:
-            sorted_standings.append(standings[player_id])
+        if points:
+            n = list(points.keys())[-1]
+            sorting_method = itemgetter('total_points', 'tiebreak_points', 'player_id', *range(1, n + 1))
+            sorted_player_ids = reversed(sorted(standings, key=lambda x: sorting_method(standings[x])))
 
-        position_standings = self.add_tiebreak_points_and_position(sorted_standings, points)
-        standings = self.set_division_for_standings(position_standings)
+            sorted_standings = []
+            for player_id in sorted_player_ids:
+                sorted_standings.append(standings[player_id])
+
+            position_standings = self.add_tiebreak_points_and_position(sorted_standings, points)
+            standings = self.set_division_for_standings(position_standings)
 
         if division:
             position_standings = self.filter_by_division_and_set_position(position_standings, division)
@@ -161,16 +164,17 @@ class TournamentManager(models.Manager):
                 for match in Match.objects.filter(tournament=tournament, is_tiebreaker=True):
                     standings[match.winner.id]["tiebreak_points"] += 1
 
-            match_points = MatchPoints.objects.get(id=1)
+            match_points = get_object_or_None(MatchPoints, id=1)
 
-            # set the high score points and match points for all players
-            for player_id in standings:
-                standings[player_id]["high_score_points"] = standings[player_id]["total_points"]
-                standings[player_id]["match_points"] = 0
-                if tournament.playoffs_are_active and division:
-                    for match in Match.objects.filter(tournament=tournament, winner=standings[player_id]["player"]):
-                        standings[player_id]["total_points"] += match_points.points
-                        standings[player_id]["match_points"] += match_points.points
+            if match_points:
+                # set the high score points and match points for all players
+                for player_id in standings:
+                    standings[player_id]["high_score_points"] = standings[player_id]["total_points"]
+                    standings[player_id]["match_points"] = 0
+                    if tournament.playoffs_are_active and division:
+                        for match in Match.objects.filter(tournament=tournament, winner=standings[player_id]["player"]):
+                            standings[player_id]["total_points"] += match_points.points
+                            standings[player_id]["match_points"] += match_points.points
 
         if get_game_scores:
             game_scores = Game.objects.get_all_scores()
