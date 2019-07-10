@@ -125,7 +125,7 @@ class ScoreAdmin(BaseAdmin):
 class PlayerAdmin(BaseAdmin):
     list_display = ("initials", "first_name", "last_name", "email", "ifpa_id", "country")
     search_fields = ("initials", "first_name", "last_name", "email", "ifpa_id", "country__name")
-    list_filter = (('country', admin.RelatedOnlyFieldListFilter),)
+    list_filter = ('country',)
 
 
 class MatchForm(ModelForm):
