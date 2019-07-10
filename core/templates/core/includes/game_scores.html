@@ -1,7 +1,9 @@
 {% load i18n tags %}
 <h2>Scores</h2>
 {% if not game_scores %}
-    {% trans "There are no scores" %}
+    <div class="alert alert-warning" role="alert">
+        {% trans "There are no scores" %}
+    </div>
 {% else %}
     <div class="table-responsive">
         <table class="table">
