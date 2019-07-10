@@ -1,0 +1,9 @@
+Django==2.2.3
+django-annoying==0.10.4
+django-bootstrap-form==3.4
+django-countries==5.3.3
+mysqlclient==1.4.2.post1
+psycopg2-binary==2.8.3
+pytz==2019.1
+sqlparse==0.3.0
+wheel==0.26.0

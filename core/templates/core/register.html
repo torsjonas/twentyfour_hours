@@ -1,0 +1,7 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% block content %}
+{% trans "Register as a player" as form_title %}
+{% trans "Register" as submit_text %}
+{% include "core/forms/standard_form.html" with form_title=form_title submit_text=submit_text %}
+{% endblock %}

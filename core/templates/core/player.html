@@ -1,0 +1,6 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% block content %}
+    <h1>{{ player.get_initials_and_name }} ({{ player.country.name }})</h1>
+    {% include "core/includes/game_scores.html" with game_scores=game_scores player=player %}
+{% endblock %}

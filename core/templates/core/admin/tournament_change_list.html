@@ -1,0 +1,11 @@
+{% extends 'admin/change_list.html' %}
+{% load i18n %}
+
+{% block content_title %}
+    {% comment %}this was the only block that I could find to override :( {% endcomment %}
+    {% if title %}<h1>{{ title }}</h1>{% endif %}
+    {% if TOURNAMENT %}
+        <a href="{% url "create_playoff_matches" %}"><input type="submit" value="{% trans "Create playoff matches for the active tournament" %}" /></a>
+    {% endif %}
+{% endblock %}
+

@@ -1,0 +1,14 @@
+{% load bootstrap i18n %}
+<div class="row">
+    <div class="col-6">
+        <form role="form" method="POST" id="{% if view.form_id %}{{ view.form_id }}{% else %}{{ form_id }}{% endif %}" {% if is_multipart %}enctype="multipart/form-data"{% endif %}>
+            <legend>{{ form_title }}</legend>
+            {% csrf_token %}
+            {{ form|bootstrap }}
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">{{ submit_text }}</button>
+            </div>
+        </form>
+    <div>
+    <div class="col-6"></div>
+</div>

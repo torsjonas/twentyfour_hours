@@ -1,0 +1,31 @@
+{% load i18n tags %}
+<h2>Scores</h2>
+{% if not game_scores %}
+    {% trans "There are no scores" %}
+{% else %}
+    <div class="table-responsive">
+        <table class="table">
+        <tbody>
+        {% for game_score in game_scores %}
+            <tr class="distinct fluff">
+                <td colspan="10"><h4>{{ game_score.name }}</h4></td>
+            </tr>
+            {% if not game_score.scores %}
+                <tr>
+                    <td colspan="10">{% trans "There are no scores for this game" %}</td>
+                </tr>
+            {% endif %}
+            {% for game_score in game_score.scores %}
+                <tr class="{% cycle 'row1' 'row2' %}">
+                    <td><strong>{{ game_score.position }}</strong> {% if game_score.points %}({{ game_score.points }}){% endif %}</td>
+                    <td>{{ game_score.score|intdot }}</td>
+                    <td><a href="{{ game_score.player.get_url }}">{{ game_score.player.get_initials_and_name }}</a></td>
+                    <td><i class="{{ game_score.player.country.flag_css }}"></i></td>
+                </tr>
+            {% endfor %}
+            <tr class="spacer"><td colspan="10"></td></tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    </div>
+{% endif %}

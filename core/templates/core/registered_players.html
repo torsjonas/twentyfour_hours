@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Registered players" %}</h1>
+<div class="table-responsive">
+    <table class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">{% trans "Initials" %}</th>
+            <th scope="col">{% trans "Name" %}</th>
+            <th scope="col">{% trans "Country" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for player in players %}
+        <tr>
+            <td><a href="{{ player.get_url }}">{{ player.initials }}</a></td>
+            <td><a href="{{ player.get_url }}">{{ player.first_name }} {{ player.last_name }}</a></td>
+            <td><i class="{{ player.country.flag_css }}"></i> {{ player.country.name }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+{% endblock %}

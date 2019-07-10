@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Registered" %}</h1>
+    <p>
+    {% trans "Thanks. You are now registered as a player at the tournament." %}
+    </p>
+    <p>
+        <a href="{% url "registered_players" %}">{% trans "View all registered players" %}</a>
+    </p>
+{% endblock %}

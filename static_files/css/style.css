@@ -1,0 +1,24 @@
+/* Show it is fixed to the top */
+body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+}
+
+tr.row1 {
+    background-color: rgba(0,0,0,.05);
+}
+
+tr.distinct {
+    color: #fff;
+    background-color: #772953;
+    border-color: #642246;
+}
+
+p.help-block {
+    color: #999;
+    font-size: 0.8rem;
+}
+
+tr.spacer > td {
+  padding-bottom: 3em;
+}

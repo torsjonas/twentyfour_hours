@@ -1,0 +1,111 @@
+{% extends "core/base.html" %}
+{% load i18n humanize tags %}
+
+{% block content %}
+
+{% if active_tournament %}
+    {% if request.GET.division %}
+        <h1>{% trans "Final results of" %} {{ request.GET.division }} {% trans "division" %}</h1>
+        {% if not standings %}
+            {% trans "There are no final results, yet." %}
+        {% endif %}
+    {% endif %}
+    {% if not request.GET.division %}
+        {% if not TOURNAMENT.playoffs_are_active %}
+            <h1>{% trans "Current standings in" %} {{ active_tournament.name }}</h1>
+        {% else %}
+            <h1>{% trans "Current qualification standings in" %} {{ active_tournament.name }}</h1>
+        {% endif %}
+        <div class="alert alert-primary" role="alert">
+            {% trans "The high score entries run from" %}: <strong>{{ active_tournament.start_date|date:"d M Y H:i" }}</strong> {% trans "to" %}: <strong>{{ active_tournament.end_date|date:"d M Y H:i" }}</strong>
+            <br />
+            {% trans "The following points are awared on the games: " %}
+            {% for point in points %}
+                <strong>#{{ point.position }}</strong> - {{ point.points }}
+                {% if point.points > 2 %}
+                    {% trans "points" %}{% if not forloop.last %},{% endif %}
+                {% else %}
+                    {% trans "point" %}{% if not forloop.last %},{% endif %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if not standings %}
+        {% if not request.GET.division %}
+            <div class="alert alert-warning" role="alert">
+                {% trans "There are no standings" %}
+            </div>
+        {% endif %}
+    {% else %}
+        <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">{% trans "Position" %}</th>
+                <th scope="col">{% trans "Player" %}</th>
+                <th scopr="col"></th>
+                {% if has_tiebreak_points %}
+                    <th scope="col">{% trans "Tiebreak wins" %}</th>
+                {% endif %}
+                {% if has_match_points %}
+                    <th scope="col">{% trans "High score points" %}</th>
+                    <th scope="col">{% trans "Match points" %}</th>
+                {% endif %}
+                    <th scope="col">{% trans "Total points" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for standing in standings %}
+            {% ifchanged standing.division %}
+                {% if TOURNAMENT.playoffs_are_active %}
+                    <tr class="distinct">
+                        <td colspan="10">
+                        {% if standing.division %}
+                            <h5>{{ standing.division }} {% trans "Division" %}</h5>
+                        {% else %}
+                            {% if TOURNAMENT.playoffs_are_active %}
+                                <h5>{% trans "Missing playoffs" %}</h5>
+                            {% endif %}
+                        {% endif %}
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endifchanged %}
+            <tr class="{% cycle 'row1' 'row2' %}">
+                <td><strong>{{ standing.position }}</strong></td>
+                <td><a href="{{ standing.player.get_url }}">{{ standing.player.get_initials_and_name }}</a></td>
+                <td><i class="{{ standing.player.country.flag_css }}"></i></td>
+                {% if has_tiebreak_points %}
+                    <td>
+                        {% if standing.tiebreak_points %}
+                            {{ standing.tiebreak_points }}
+                        {% endif %}
+                    </td>
+                {% endif %}
+                {% if has_match_points %}
+                    <td>
+                        {% if standing.high_score_points %}
+                            {{ standing.high_score_points }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if standing.match_points %}
+                            {{ standing.match_points }}
+                        {% endif %}
+                    </td>
+                {% endif %}
+                <td>{{ standing.total_points }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    {% endif %}
+
+    {% if not request.GET.division %}
+        {% include "core/includes/game_scores.html" with game_scores=game_scores %}
+    {% endif %}
+{% else %}
+    <h1>{% trans "Current standings" %}</h1>
+    {% trans "There's no active tournament." %}
+{% endif %}
+{% endblock %}

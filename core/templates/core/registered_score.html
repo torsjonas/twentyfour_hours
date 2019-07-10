@@ -1,0 +1,11 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Registered Score" %}</h1>
+    <p>
+        {% trans "Thanks. Your score has been registered." %}
+    </p>
+    <p>
+        <a href="{% url "index" %}">{% trans "View standings" %}</a>
+    </p>
+{% endblock %}

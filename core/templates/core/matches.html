@@ -1,0 +1,50 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Playoff matches" %}</h1>
+
+{% if not matches %}
+    {% trans "There are no playoff matches, yet." %}
+{% endif %}
+
+{% if matches %}
+    <table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">{% trans "Player 1" %}</th>
+            <th scope="col">{% trans "Player 2" %}</th>
+            <th scope="col">{% trans "Division" %}</th>
+            <th scope="col">{% trans "Game" %}</th>
+            <th scope="col">{% trans "Winner" %}</th>
+            {% if request.user.is_staff %}
+                <th scope="col"></th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+
+    {% for match in matches %}
+        {% ifchanged match.player_ids_string %}
+            <tr class="spacer">
+                <td colspan="10"></td>
+            </tr>
+        {% endifchanged %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+            <td><a href="{{ match.player1.get_url }}">{{ match.player1.get_initials_and_name }}</a></td>
+            <td><a href="{{ match.player2.get_url }}">{{ match.player2.get_initials_and_name }}</a></td>
+            <td>{{ match.division }}</td>
+            <td>{{ match.game }}</td>
+            <td>
+                {% if not match.winner %}
+                    {% trans "No results yet" %}
+                {% else %}
+                    <a href="{{ match.winner.get_url }}">{{ match.winner.get_initials_and_name }}</a>
+                {% endif %}
+            </td>
+            {% if request.user.is_staff %}
+                <th scope="col"><small><a href="{{ match.get_admin_url }}" target="_blank">{% trans "Edit match" %}</a></small></th>
+            {% endif %}
+        </tr>
+    {% endfor %}
+{% endif %}
+{% endblock %}

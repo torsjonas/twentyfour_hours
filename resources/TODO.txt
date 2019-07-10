@@ -1,0 +1,71 @@
+******************************************
+ TODO
+******************************************
+
+- länk till att lägga in matchresultat på:
+    http://thefezen.ddns.net:8000/matches/
+    ... om man är admin
+
+- visar inte Jörgen Holm från b-divisionen utan tar Alexander Adrian från A istället:
+    http://thefezen.ddns.net:8000/?division=B
+
+******************************************
+ FIXAT
+******************************************
+
+- om tiebreak-wins finns ska positionen öka med 1:
+    http://thefezen.ddns.net:8000/
+
+- b-division-spelare kan gå om a-spelare i qualification-standings tror jag, på index
+    ... nix
+
+- spelarsida med skårer osv.
+
+- fixa så att man inte kan slumpa fram samma spel flera gånger för matcherna
+
+- en sida där slutspelsmatcherna visas
+
+- adminkommando för att generera matcher, typ synchronize fortnox
+
+- kunna sätta antal spelare till playoff (utan divisioner) och visa det på total osv. osv.
+
+- kunna sätta cutoff för A och B-division, och antal spelare per division
+
+- lista spelare som har 0 poäng i standings
+
+- när slutspelsmatcherna är fixade, kör med "Highscore points" och "Match points" i standings, och en "Total points" som är den som avgör
+    ... inställning för tournament om slutspel är aktivt eller inte och isf. inte visa Highscore points och Match points
+
+- fixa slutspelsmatcher, med konfiguration för hur mycket poäng dom ger
+
+- slutdatum för turnering som krav och visa start och sluttid i standings
+
+- skriv ut på standings hur mycket platserna ger
+
+- kunna sätta tiebreaker mellan spelare
+
+- testa att positionen inte ökar då två spelare har exakt samma antal ettor t.ex.
+
+- göra så att get_all_scores inte körs två gånger på index
+
+- verifieringssida innan poängen sparas
+
+- filtrera ut aktiva spel i registrera-score-dropdownen
+
+- filtrera på aktiva spel i models.py där man tar fram standings och scores
+
+- custom actions för att inaktivera och aktivera spel i admin
+
+- list_display för spel i admin där man ser vilka som är aktiva + filter på aktiva
+
+- hantera duplicerade scorer för spelarna, nej det behövs inte, tar man flera platser ska man ha flera poäng
+
+- totalställning
+
+- select2 för dropdownsen
+
+- kunna registera spelare
+
+- lista spelare
+
+- registrera poäng
