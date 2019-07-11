@@ -359,17 +359,16 @@ class GameManager(models.Manager):
 class PlayerManager(models.Manager):
 
     def get_score_overview(self, game_scores, player):
-        # now these loops truly suck ...
+        # now these loops truly suck ... the game_scores are used since they have the position and points
         score_overview = []
         total_points = 0
-        filtered_game_scores = game_scores.copy()
         tournament = Tournament.objects.get(is_active=True)
 
         if tournament:
             for ordered_game in Game.objects.filter(is_active=True).order_by("name"):
-                for game in filtered_game_scores:
+                overview = dict()
+                for game in game_scores:
                     # mixing dicts and object properties here, d-oh
-                    overview = dict()
                     overview["game"] = game
                     overview["score"] = None
                     overview["points"] = 0
@@ -384,10 +383,11 @@ class PlayerManager(models.Manager):
                                 total_points += score.points
                             if score.player == player:
                                 break
+                            else:
+                                continue
+                        break
 
-                    score_overview.append(overview)
-                    # remove the first in the list to avoid redundant loops
-                    filtered_game_scores.pop(0)
+                score_overview.append(overview)
 
         return score_overview, total_points
 

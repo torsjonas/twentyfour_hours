@@ -16,7 +16,7 @@
     {% endif %}
 
     {% if score_overview %}
-        <div class="spacer"></div>
+        <div class="small-spacer"></div>
         <h3>{% trans "Score overview" %}</h3>
         <table class="table">
         <thead class="thead-dark">
@@ -39,23 +39,32 @@
                 </td>
                 <td>
                     {% if overview.position %}
+                        {% if overview.position == 1 %}
+                            <strong>
+                        {% endif %}
                         {{ overview.position }}
+                        {% if overview.position == 1 %}
+                            </strong>
+                        {% endif %}
                     {% else %}
                         <small>{% trans "N/A" %}</small>
                     {% endif %}
                 </td>
                 <td>
-                    {% if overview.points != 0 %}
-                        {{ overview.points }}
-                    {% else %}
-                        <small>{% trans "N/A" %}</small>
+                    {% if overview.position == 1 %}
+                        <strong>
                     {% endif %}
+                    {{ overview.points }}
+                    {% if overview.position == 1 %}
+                        </strong>
+                    {% endif %}
+                </td>
             </tr>
         {% endfor %}
         <tr>
             <td colspan="2"></td>
             <td><strong>{% trans "Total points" %}</strong></td>
-            <td>{{ total_points }}</td>
+            <td><strong>{{ total_points }}</strong></td>
         </tr>
         </table>
     {% endif %}

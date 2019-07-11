@@ -220,9 +220,9 @@ class PlayerDetailView(DetailView):
         for standing in standings:
             if standing["player"] == self.object:
                 position = standing["position"]
+                break
 
         context["position"] = position
-
         return context
 
 
