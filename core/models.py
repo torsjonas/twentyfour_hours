@@ -211,12 +211,20 @@ class TournamentManager(models.Manager):
 
 class MatchManager(models.Manager):
 
+    def get_division_matches(self, matches, division):
+        division_matches = []
+        for match in matches:
+            if match.division == division:
+                division_matches.append(match)
+
+        return division_matches
+
     def get_active_matches(self):
         tournament = Tournament.objects.get(is_active=True)
         # ouch, get the entire standings just to set the division of the match
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores()
+        standings, game_scores = Tournament.objects.get_standings_and_game_scores(get_game_scores=False)
         matches = []
-        for match in Match.objects.filter(is_tiebreaker=False, tournament=tournament):
+        for index, match in enumerate(Match.objects.filter(is_tiebreaker=False, tournament=tournament)):
             # not an ideal loop, nevertheless
             for standing in standings:
                 if standing["player"] == match.player1:
@@ -224,7 +232,22 @@ class MatchManager(models.Manager):
                     matches.append(match)
                     break
 
+        # set the round of the matches
+        a_division_matches = self.get_division_matches(matches, "A")
+        b_division_matches = self.get_division_matches(matches, "B")
+        self.set_round_of_matches(a_division_matches, "A", tournament)
+        self.set_round_of_matches(b_division_matches, "B", tournament)
         return matches
+
+    def set_round_of_matches(self, matches, division, tournament):
+        round_number = 1
+        for index, match in enumerate(matches):
+            match_number = index + 1
+            match.round = round_number
+            if division == "A" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
+                round_number += 1
+            if division == "B" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
+                round_number += 1
 
     def create_playoff_matches(self):
         tournament = get_object_or_None(Tournament, is_active=True)

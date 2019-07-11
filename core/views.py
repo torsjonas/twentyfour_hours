@@ -223,6 +223,7 @@ class PlayerDetailView(DetailView):
                 break
 
         context["position"] = position
+        context["first_points"] = Points.objects.all().order_by("-points").first()
         return context
 
 

@@ -25,6 +25,16 @@
     <tbody>
 
     {% for match in matches %}
+        {% ifchanged match.division %}
+            <tr class="distinct">
+                <td colspan="10"><h5>{{ match.division }} {% trans "Division" %}</h5>
+            </tr>
+        {% endifchanged %}
+        {% ifchanged match.round %}
+            <tr>
+                <td colspan="10"><small>{% trans "Round" %} {{ match.round }}</small></td>
+            </tr>
+        {% endifchanged %}
         <tr class="{% cycle 'row1' 'row2' %}">
             <td><a href="{{ match.player1.get_url }}">{{ match.player1.get_initials_and_name }}</a></td>
             <td><small>{% trans "vs." %}</small></td>
