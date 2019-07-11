@@ -2,6 +2,8 @@
 {% load i18n %}
 {% block content %}
 <h1>{% trans "Registered players" %}</h1>
+
+{% if players %}
 <div class="table-responsive">
     <table class="table table-striped">
     <thead class="thead-dark">
@@ -22,4 +24,7 @@
     </tbody>
     </table>
 </div>
+{% else %}
+    {% trans "There are no registered players" %}
+{% endif %}
 {% endblock %}

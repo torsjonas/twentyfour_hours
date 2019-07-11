@@ -1,6 +1,63 @@
 {% extends "core/base.html" %}
-{% load i18n %}
+{% load i18n tags %}
 {% block content %}
     <h1>{{ player.get_initials_and_name }} ({{ player.country.name }})</h1>
+
+    {% if position %}
+        <h3>
+            {% if not TOURNAMENT.playoffs_are_active %}
+                {% trans "Current position" %}
+            {% else %}
+                {% trans "Current qualifying position" %}
+            {% endif %}
+            :
+            <a href="/">{{ position }}</a>
+        </h3>
+    {% endif %}
+
+    {% if score_overview %}
+        <div class="spacer"></div>
+        <h3>{% trans "Score overview" %}</h3>
+        <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">{% trans "Game" %}</th>
+                <th scope="col">{% trans "Score" %}</th>
+                <th scope="col">{% trans "Position" %}</th>
+                <th scope="col">{% trans "Points" %}</th>
+            </tr>
+        </thead>
+        {% for overview in score_overview %}
+            <tr>
+                <td>{{ overview.game }}</td>
+                <td>
+                    {% if overview.score %}
+                        {{ overview.score.score|intdot }}
+                    {% else %}
+                        <small>{% trans "N/A" %}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if overview.position %}
+                        {{ overview.position }}
+                    {% else %}
+                        <small>{% trans "N/A" %}</small>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if overview.points != 0 %}
+                        {{ overview.points }}
+                    {% else %}
+                        <small>{% trans "N/A" %}</small>
+                    {% endif %}
+            </tr>
+        {% endfor %}
+        <tr>
+            <td colspan="2"></td>
+            <td><strong>{% trans "Total points" %}</strong></td>
+            <td>{{ total_points }}</td>
+        </tr>
+        </table>
+    {% endif %}
     {% include "core/includes/game_scores.html" with game_scores=game_scores player=player %}
 {% endblock %}

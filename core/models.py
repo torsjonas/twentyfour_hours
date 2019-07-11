@@ -18,11 +18,13 @@ class BaseModel(models.Model):
     class Meta:
         abstract = True
 
+
 def get_points_in_dict():
     points = dict()
     for point in Points.objects.all().order_by("position"):
         points[point.position] = point.points
     return points
+
 
 class KeyValueManager(models.Manager):
 
@@ -192,6 +194,7 @@ class TournamentManager(models.Manager):
         else:
             return standings, game_scores
 
+
 class MatchManager(models.Manager):
 
     def get_active_matches(self):
@@ -270,6 +273,7 @@ class MatchManager(models.Manager):
 
         return paired_standings
 
+
 class GameManager(models.Manager):
 
     def get_all_scores(self):
@@ -283,6 +287,7 @@ class GameManager(models.Manager):
             for index, score in enumerate(Score.objects.active().filter(game=game).order_by("-score")):
                 position = index + 1
                 score.position = position
+                score.points = 0
                 if position <= list(points.keys())[-1]:
                     if not score.player.id in player_ids:
                         # don't award multiple points for the same game for the player
@@ -292,6 +297,43 @@ class GameManager(models.Manager):
 
         return games
 
+
+class PlayerManager(models.Manager):
+
+    def get_score_overview(self, game_scores, player):
+        # now these loops truly suck ...
+        score_overview = []
+        total_points = 0
+        filtered_game_scores = game_scores.copy()
+        tournament = Tournament.objects.get(is_active=True)
+
+        if tournament:
+            for ordered_game in Game.objects.filter(is_active=True).order_by("name"):
+                for game in filtered_game_scores:
+                    # mixing dicts and object properties here, d-oh
+                    overview = dict()
+                    overview["game"] = game
+                    overview["score"] = None
+                    overview["points"] = 0
+                    overview["position"] = None
+
+                    if ordered_game == game:
+                        for score in game.scores:
+                            if score.player == player:
+                                overview["score"] = score
+                                overview["points"] = score.points
+                                overview["position"] = score.position
+                                total_points += score.points
+                            if score.player == player:
+                                break
+
+                    score_overview.append(overview)
+                    # remove the first in the list to avoid redundant loops
+                    filtered_game_scores.pop(0)
+
+        return score_overview, total_points
+
+
 class ScoreManager(models.Manager):
 
     def active(self):
@@ -300,6 +342,25 @@ class ScoreManager(models.Manager):
             return Score.objects.filter(tournament=tournament)
 
         return Score.objects.none()
+
+    def get_top_scores(self):
+        limit = 3
+        standings, game_scores = Tournament.objects.get_standings_and_game_scores(skip_standings=True)
+        for game in game_scores:
+            game.top_scores = []
+            for index, score in enumerate(game.scores):
+                if (index + 1) > limit:
+                    break
+                game.top_scores.append(score)
+
+        # make sure we fill out the positions in the game scores:
+        for game in game_scores:
+            if len(game.top_scores) != limit:
+                for i in range(len(game.top_scores), limit):
+                    game.top_scores.append(None)
+
+        return game_scores
+
 
 class Game(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -322,6 +383,8 @@ class Player(models.Model):
     email = models.EmailField(null=False, blank=False)
     ifpa_id = models.IntegerField(null=True, blank=True, help_text=_("Not required"))
     country = CountryField(null=False, blank=False)
+
+    objects = PlayerManager()
 
     def get_url(self):
         return reverse("player_detail", args=[self.id])
@@ -351,6 +414,7 @@ class Score(models.Model):
     def __str__(self):
         return str(self.game) + " - " + str(self.score) + " - " + str(self.player)
 
+
 class Points(models.Model):
     position = models.IntegerField(null=False, blank=False)
     points = models.IntegerField(null=False, blank=False)
@@ -361,6 +425,7 @@ class Points(models.Model):
 
     def __str__(self):
         return str(self.position) + " - " + str(self.points)
+
 
 class Tournament(models.Model):
     is_active = models.BooleanField(default=False)
@@ -403,6 +468,7 @@ class Match(BaseModel):
         if self.winner:
             str += " | " + self.winner.initials
         return str
+
 
 class MatchPoints(models.Model):
     points = models.IntegerField(null=False, blank=False)

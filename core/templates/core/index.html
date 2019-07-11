@@ -117,7 +117,7 @@
 
     <div class="spacer"></div>
     {% if not request.GET.division %}
-        {% include "core/includes/game_scores.html" with game_scores=game_scores %}
+        {% include "core/includes/game_scores.html" with game_scores=game_scores display_score_links=display_score_links %}
     {% endif %}
 {% else %}
     <h1>{% trans "Current standings" %}</h1>

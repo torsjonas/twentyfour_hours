@@ -2,9 +2,19 @@
 <h3>
     {% trans "Scores" %}
     {% if game_scores|length %}
-        ({{ game_scores|length }} {% trans "games" %})
+        ({{ game_scores|length }}
+        {% if game_scores|length > 1 %}
+            {% trans "games" %})
+        {% else %}
+            {% trans "game" %})
+        {% endif %}
     {% endif %}
 </h3>
+
+{% if display_score_links %}
+    <a href="{% url "latest_scores" %}">{% trans "Latest scores" %}</a>
+     | <a href="{% url "top_scores" %}">{% trans "Top scores" %}</a>
+{% endif %}
 
 {% if game_scores %}
     <div class="alert alert-warning" role="alert">

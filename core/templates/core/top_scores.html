@@ -1,0 +1,40 @@
+{% extends "core/base.html" %}
+{% load i18n tags %}
+{% block content %}
+<h1>{% trans "Top scores" %}</h1>
+
+{% if not TOURNAMENT %}
+    {% trans "There's no active tournament to display scores for." %}
+{% endif %}
+
+{% if top_scores %}
+    <table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">{% trans "Game" %}</th>
+            <th scope="col">{% trans "Score 1" %}</th>
+            <th scope="col">{% trans "Score 2" %}</th>
+            <th scope="col">{% trans "Score 3" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for game in top_scores %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+            <td><a href="/#{{ game.id }}">{{ game.name }}</a></td>
+            {% for score in game.top_scores %}
+                <td>
+                    {% if score.score %}
+                        {{ score.score|intdot }}
+                        (<a href="{{ score.player.get_url }}">{{ score.player.initials }}</a>)
+                    {% else %}
+                        <small>{% trans "N/A" %}</small>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}

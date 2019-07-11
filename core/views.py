@@ -31,6 +31,7 @@ class IndexView(TemplateView):
         context["points"] = Points.objects.all().order_by("-points")
         context["divisions_active"] = False
         context["qualification_rules"] = KeyValue.objects.get_qualification_rules()
+        context["display_score_links"] = True
 
         if active_tournament and (active_tournament.number_of_players_in_a_division
                                   or active_tournament.number_of_players_in_b_division):
@@ -161,6 +162,7 @@ class ScoreCreateView(CreateView):
         context["preselected_player_id"] = self.request.COOKIES.get('preselected_player_id')
         return context
 
+
 class ScoreCreatedView(TemplateView):
     template_name = "core/registered_score.html"
 
@@ -194,7 +196,11 @@ class PlayerDetailView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores(skip_standings=True)
+        standings, game_scores = Tournament.objects.get_standings_and_game_scores()
+        score_overview, total_points = Player.objects.get_score_overview(game_scores, self.object)
+        context["score_overview"] = score_overview
+        context["total_points"] = total_points
+
         # clear all game scores which aren't this players'
         cleaned_games = []
         for game in game_scores:
@@ -206,7 +212,17 @@ class PlayerDetailView(DetailView):
             game.scores = scores
             if game.scores:
                 cleaned_games.append(game)
+
         context["game_scores"] = cleaned_games
+
+        # set the player's position
+        position = None
+        for standing in standings:
+            if standing["player"] == self.object:
+                position = standing["position"]
+
+        context["position"] = position
+
         return context
 
 
@@ -223,6 +239,14 @@ class LatestScoresView(TemplateView):
         context["limit"] = limit
         return context
 
+
+class TopScoresView(TemplateView):
+    template_name = "core/top_scores.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context["top_scores"] = Score.objects.get_top_scores()
+        return context
 
 
 def clear_preselected_player(request):
