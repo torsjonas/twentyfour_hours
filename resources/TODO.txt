@@ -2,6 +2,11 @@
  TODO
 ******************************************
 
+- lägga till statistik till spelen:
+    - number of games
+    - average score
+    - median score
+
 *****************************************
  FIXAT
 ******************************************
