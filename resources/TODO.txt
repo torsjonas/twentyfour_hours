@@ -2,14 +2,14 @@
  TODO
 ******************************************
 
+*****************************************
+ FIXAT
+******************************************
+
 - lägga till statistik till spelen:
     - number of games
     - average score
     - median score
-
-*****************************************
- FIXAT
-******************************************
 
 - set choicen på winner till någon av dom två valda spelarna, player1 och player2
     http://localhost:8000/admin/core/match/821/change/

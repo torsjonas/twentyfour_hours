@@ -9,6 +9,11 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django_countries.fields import CountryField
 
+def median_value(queryset, term):
+    count = queryset.count()
+    return queryset.values_list(term, flat=True).order_by(term)[int(round(count/2))]
+
+
 # https://codereview.stackexchange.com/a/88688
 def shift_left(lst, n):
     """Shifts the lst over by n indices
