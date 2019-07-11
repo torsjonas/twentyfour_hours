@@ -67,6 +67,13 @@ class PlayerCreateView(CreateView):
     model = Player
     form_class = PlayerForm
 
+    def form_valid(self, form):
+        # always make the initials to uppercase
+        self.object = form.save(commit=False)
+        self.object.initials = self.object.initials.upper()
+        self.object.save()
+        return super().form_valid(form)
+
 
 class PlayerCreatedView(TemplateView):
     template_name = "core/registered.html"

@@ -2,9 +2,11 @@
  TODO
 ******************************************
 
-******************************************
+*****************************************
  FIXAT
 ******************************************
+
+- fixa så initialer alltid blir uppercase vid registreringen
 
 - datum/tid för när scoren registrerats
 
