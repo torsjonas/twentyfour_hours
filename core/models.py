@@ -339,6 +339,7 @@ class Player(models.Model):
 class Score(models.Model):
     game = models.ForeignKey(Game, null=False, blank=False, on_delete=models.PROTECT)
     score = models.BigIntegerField(null=False, blank=False)
+    date_created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     player = models.ForeignKey(Player, null=False, blank=False, on_delete=models.PROTECT)
     tournament = models.ForeignKey("Tournament", null=False, blank=False, on_delete=models.PROTECT)
 
@@ -386,6 +387,7 @@ class Match(BaseModel):
     game = models.ForeignKey(Game, null=False, blank=False, on_delete=models.PROTECT)
     is_tiebreaker = models.BooleanField(default=False)
     winner = models.ForeignKey(Player, null=True, blank=True, on_delete=models.PROTECT, related_name='match_winner')
+    date_created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     tournament = models.ForeignKey(Tournament, null=False, blank=False, on_delete=models.PROTECT)
 
     objects = MatchManager()
