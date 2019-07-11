@@ -1,14 +1,16 @@
+from datetime import datetime
+
 from annoying.functions import get_object_or_None
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError, PermissionDenied
-from django.forms import TextInput, ModelForm, CharField
+from django.forms import TextInput, ModelForm, CharField, BooleanField
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, CreateView, DetailView
 
-from core.models import Player, Score, TournamentManager, Game, Tournament, Points, Match, KeyValue
+from core.models import Player, Score, Game, Tournament, Points, Match, KeyValue
 
 
 class IndexView(TemplateView):
@@ -80,6 +82,7 @@ class RegisteredPlayersView(TemplateView):
 
 
 class ScoreForm(ModelForm):
+    save_player = BooleanField(label=_("Save the selected player for next score registration"), required=False)
 
     def clean(self):
         if self.cleaned_data["game"] and self.cleaned_data["score"] and self.cleaned_data["player"]:
@@ -116,12 +119,29 @@ class ScoreCreateView(CreateView):
     form_class = ScoreForm
     form_id = "score_form"
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if form.cleaned_data["save_player"]:
+            response.set_cookie("preselected_player_id", form.cleaned_data["player"].id,
+                                expires=datetime.strptime('2090-02-10' , '%Y-%m-%d'))
+
+        return response
+
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields["score"].widget = TextInput()
         form.fields["score"] = CharField()
         form.fields["score"].help_text = _("Feel free to use separators such as space, comma or dots in the score")
         form.fields["game"].queryset = Game.objects.filter(is_active=True)
+
+        # preselect the player if we have a cookie
+        preselected_player_id = self.request.COOKIES.get('preselected_player_id')
+        if preselected_player_id:
+            player = get_object_or_None(Player, id=preselected_player_id)
+            if player:
+                form.fields["player"].initial = player
+
+
         return form
 
     def get_context_data(self, *args, **kwargs):
