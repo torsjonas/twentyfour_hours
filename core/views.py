@@ -81,6 +81,14 @@ class RegisteredPlayersView(TemplateView):
 
 class ScoreForm(ModelForm):
 
+    def clean(self):
+        if self.cleaned_data["game"] and self.cleaned_data["score"] and self.cleaned_data["player"]:
+            tournament = Tournament.objects.get(is_active=True)
+            score = get_object_or_None(Score, game=self.cleaned_data["game"], score=self.cleaned_data["score"],
+                                       player=self.cleaned_data["player"], tournament=tournament)
+            if score:
+                raise ValidationError(_("This score has already been registered"))
+
     def clean_score(self):
         if self.cleaned_data["score"]:
             numbers = ''.join(c for c in self.cleaned_data["score"] if c.isdigit())

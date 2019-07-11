@@ -2,14 +2,16 @@
  TODO
 ******************************************
 
-- länka spelen på spelarsidan
-    ... #-länkar på spellistn i <small> också
-
-- göra så man inte kan regga samma poäng två gånger
+- en checkbox för att pre-selecta den valda spelaren i fortsättningen i score-registreringen
 
 ******************************************
  FIXAT
 ******************************************
+
+- göra så man inte kan regga samma poäng två gånger
+
+- länka spelen på spelarsidan
+    ... #-länkar på spellistn i <small> också
 
 - länk till att lägga in matchresultat på:
     http://thefezen.ddns.net:8000/matches/
