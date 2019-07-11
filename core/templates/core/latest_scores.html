@@ -1,0 +1,36 @@
+{% extends "core/base.html" %}
+{% load i18n tags %}
+{% block content %}
+<h1>{% trans "Latest scores" %}</h1>
+
+{% if not TOURNAMENT %}
+    {% trans "There's no active tournament to display scores for." %}
+{% endif %}
+
+{% if scores %}
+    <p>
+        {% trans "Displaying the" %} {{ limit }} {% trans "latest scores" %}
+    </p>
+    <table class="table">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">{% trans "Game" %}</th>
+            <th scope="col">{% trans "Score" %}</th>
+            <th scope="col">{% trans "Player" %}</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for score in scores %}
+        <tr class="{% cycle 'row1' 'row2' %}">
+            <td><a href="/#{{ score.game.id }}">{{ score.game.name }}</a></td>
+            <td>{{ score.score|intdot }}</td>
+            <td><a href="{{ score.player.get_url }}">{{ score.player.get_initials_and_name }}</a></td>
+            <td><i class="{{ score.player.country.flag_css }}"></i></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endif %}
+
+{% endblock %}

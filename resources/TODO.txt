@@ -2,13 +2,13 @@
  TODO
 ******************************************
 
-- datum/tid för när scoren registrerats
-
-- en sida med dom x antal senaste poängen
-
 ******************************************
  FIXAT
 ******************************************
+
+- datum/tid för när scoren registrerats
+
+- en sida med dom x antal senaste poängen
 
 - en checkbox för att pre-selecta den valda spelaren i fortsättningen i score-registreringen
     ... en länk för att rensa den förvalda spelaren också

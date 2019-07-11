@@ -202,6 +202,22 @@ class PlayerDetailView(DetailView):
         context["game_scores"] = cleaned_games
         return context
 
+
+class LatestScoresView(TemplateView):
+    template_name = "core/latest_scores.html"
+
+    def get_context_data(self, *args, **kwargs):
+        limit = 100
+        context = super().get_context_data(*args, **kwargs)
+        tournament = Tournament.objects.get(is_active=True)
+        if tournament:
+            context["scores"] = Score.objects.filter(tournament=tournament).order_by("-id")[:limit]
+
+        context["limit"] = limit
+        return context
+
+
+
 def clear_preselected_player(request):
     response = HttpResponseRedirect(reverse("register_score"))
     response.delete_cookie("preselected_player_id")
