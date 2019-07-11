@@ -232,6 +232,9 @@ class MatchManager(models.Manager):
         if not tournament:
             raise Exception("There's no active tournament")
 
+        if not tournament.playoffs_are_active:
+            raise Exception("Playoffs are not active for the active tournament")
+
         if tournament.playoff_matches_are_created:
             raise Exception("The playoff matches have already been created for the active tournament")
 
@@ -307,7 +310,24 @@ class MatchManager(models.Manager):
         for standing in standings:
             player_standings[standing["player"].id] = standing["position"]
 
-        for paired_match in paired_matches:
+        matches_per_round = len(standings) / 2
+        number_of_active_games = Game.objects.filter(is_active=True).count()
+        games_in_round = []
+
+        for index, paired_match in enumerate(paired_matches):
+
+            if matches_per_round > number_of_active_games:
+                # there are not enough active games to cover the rounds, just get a random game
+                game = self.get_random_game()
+                games_in_round.append(game)
+            else:
+                if len(games_in_round) == 0:
+                    game = self.get_random_game()
+                    games_in_round.append(game)
+                else:
+                    game = self.get_distributed_game(games_in_round)
+                    games_in_round.append(game)
+
             player_1_position = player_standings[paired_match["player_1"]]
             player_2_position = player_standings[paired_match["player_2"]]
 
@@ -318,13 +338,28 @@ class MatchManager(models.Manager):
                 player1 = Player.objects.get(id=paired_match["player_2"])
                 player2 = Player.objects.get(id=paired_match["player_1"])
 
-            self.create_match_with_random_game(player1, player2, tournament)
+            if len(games_in_round) == matches_per_round:
+                # empty the games in the round then
+                games_in_round = []
+
+            self.create_match(player1, player2, game, tournament)
 
         return matches
 
-    def create_match_with_random_game(self, player1, player2, tournament):
-        game = Game.objects.filter(is_active=True).order_by('?').first()
+    def get_distributed_game(self, games_in_round):
+        game = self.get_random_game()
+        if game in games_in_round:
+            return self.get_distributed_game(games_in_round)
+        else:
+            return game
+
+    def get_random_game(self):
+        return Game.objects.filter(is_active=True).order_by('?').first()
+
+
+    def create_match(self, player1, player2, game, tournament):
         match = Match()
+        match.game = game
         match.player1 = player1
         match.player2 = player2
         match.game = game
