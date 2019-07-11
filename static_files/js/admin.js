@@ -5,5 +5,5 @@ function addSelect2Selects() {
 }
 
 $(document).ready(function() {
-    addSelect2Selects();
+    //addSelect2Selects();
 });

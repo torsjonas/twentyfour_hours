@@ -168,6 +168,9 @@ class MatchAdmin(BaseAdmin):
 
     form = MatchForm
 
+    class Media:
+        js = ("js/match.js",)
+
 admin.site.register(Game, GameAdmin)
 admin.site.register(Player, PlayerAdmin)
 admin.site.register(Score, ScoreAdmin)

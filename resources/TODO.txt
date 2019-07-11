@@ -2,12 +2,15 @@
  TODO
 ******************************************
 
-- validering på att antal spelare till slutspel är jämna tal
-    ... och minst fyra
-
 *****************************************
  FIXAT
 ******************************************
+
+- set choicen på winner till någon av dom två valda spelarna, player1 och player2
+    http://localhost:8000/admin/core/match/821/change/
+
+- validering på att antal spelare till slutspel är jämna tal
+    ... och minst fyra
 
 - en komprimerad lista på player-sidan med vilka spel man samlat poäng på
 
