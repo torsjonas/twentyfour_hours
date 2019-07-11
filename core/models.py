@@ -250,8 +250,8 @@ class MatchManager(models.Manager):
                     b_division_standings.append(standing)
 
         matches = self.create_and_save_matches(a_division_standings, tournament)
-        #if b_division_standings:
-        #    matches.append(self.create_and_save_matches(b_division_standings, tournament))
+        if b_division_standings:
+            matches.append(self.create_and_save_matches(b_division_standings, tournament))
 
         if matches:
             tournament.playoff_matches_are_created = True
