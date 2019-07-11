@@ -2,6 +2,11 @@
  TODO
 ******************************************
 
+- länka spelen på spelarsidan
+    ... #-länkar på spellistn i <small> också
+
+- göra så man inte kan regga samma poäng två gånger
+
 ******************************************
  FIXAT
 ******************************************
