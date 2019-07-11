@@ -151,6 +151,7 @@ class ScoreCreateView(CreateView):
             if not self.request.user.is_staff:
                 raise PermissionDenied()
         context["active_tournament"] = tournament
+        context["preselected_player_id"] = self.request.COOKIES.get('preselected_player_id')
         return context
 
 class ScoreCreatedView(TemplateView):
@@ -201,3 +202,7 @@ class PlayerDetailView(DetailView):
         context["game_scores"] = cleaned_games
         return context
 
+def clear_preselected_player(request):
+    response = HttpResponseRedirect(reverse("register_score"))
+    response.delete_cookie("preselected_player_id")
+    return response

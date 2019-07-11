@@ -5,6 +5,9 @@
     {% trans "Register score" as form_title %}
     {% trans "Register" as submit_text %}
     {% include "core/forms/standard_form.html" with form_title=form_title submit_text=submit_text %}
+    {% if preselected_player_id %}
+        <a href="{% url "clear_preselected_player" %}">{% trans "Clear the preselected player" %}</a>
+    {% endif %}
 {% else %}
     <h1>{% trans "Register score" %}</h1>
     {% trans "There's no active tournament to register scores for." %}
