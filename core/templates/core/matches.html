@@ -33,7 +33,7 @@
             <td>{{ match.game }}</td>
             <td>
                 {% if not match.winner %}
-                    {% trans "No results yet" %}
+                    <small>{% trans "N/A" %}</small>
                 {% else %}
                     <a href="{{ match.winner.get_url }}">{{ match.winner.get_initials_and_name }}</a>
                 {% endif %}
