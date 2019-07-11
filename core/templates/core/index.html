@@ -17,10 +17,11 @@
             <h1>{% trans "Qualification standings in" %} {{ active_tournament.name }}</h1>
         {% endif %}
         <div class="alert alert-primary" role="alert">
-            <h4>{% trans "Info" %}</h4>
-            {% trans "The high score entries run from" %}: <strong>{{ active_tournament.start_date|date:"d M Y H:i" }}</strong> {% trans "to" %}: <strong>{{ active_tournament.end_date|date:"d M Y H:i" }}</strong>
+            <h5>{% trans "Info" %}</h5>
+            <small>
+            - {% trans "The high score entries run from" %}: <strong>{{ active_tournament.start_date|date:"d M Y H:i" }}</strong> {% trans "to" %}: <strong>{{ active_tournament.end_date|date:"d M Y H:i" }}</strong>
             <br />
-            {% trans "The following points are awared on the games: " %}
+            - {% trans "The following points are awared on the games: " %}
             {% for point in points %}
                 <strong>#{{ point.position }}</strong> - {{ point.points }}
                 {% if point.points > 2 %}
@@ -29,12 +30,17 @@
                     {% trans "point" %}{% if not forloop.last %},{% endif %}
                 {% endif %}
             {% endfor %}
+            <br />
+            - {% trans "However, a player can only be awarded points for one position on each game" %}
+            </small>
         </div>
 
         {% if qualification_rules %}
             <div class="alert alert-primary" role="alert">
-                <h4>{% trans "Rules" %}</h4>
-                {{ qualification_rules.value|linebreaksbr }}
+                <h5>{% trans "Rules and conduct" %}</h5>
+                <small>
+                    {{ qualification_rules.value|linebreaksbr }}
+                </small>
             </div>
         {% endif %}
     {% endif %}
