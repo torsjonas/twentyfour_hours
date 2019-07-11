@@ -247,6 +247,7 @@ class TopScoresView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["top_scores"] = Score.objects.get_top_scores()
+        context["points"] = Points.objects.all()
         return context
 
 

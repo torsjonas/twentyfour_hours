@@ -8,13 +8,13 @@
 {% endif %}
 
 {% if top_scores %}
-    <table class="table">
+    <table class="table table-responsive">
     <thead class="thead-dark">
         <tr>
             <th scope="col">{% trans "Game" %}</th>
-            <th scope="col">{% trans "Score 1" %}</th>
-            <th scope="col">{% trans "Score 2" %}</th>
-            <th scope="col">{% trans "Score 3" %}</th>
+            {% for point in points %}
+                <th scope="col">{% trans "Score" %} {{ forloop.counter }}</th>
+            {% endfor %}
         </tr>
     </thead>
     <tbody>

@@ -460,7 +460,7 @@ class ScoreManager(models.Manager):
         return Score.objects.none()
 
     def get_top_scores(self):
-        limit = 3
+        limit = Points.objects.all().count()
         standings, game_scores = Tournament.objects.get_standings_and_game_scores(skip_standings=True)
         for game in game_scores:
             game.top_scores = []
