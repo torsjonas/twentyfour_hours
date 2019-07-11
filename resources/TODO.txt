@@ -2,13 +2,13 @@
  TODO
 ******************************************
 
-- en komprimerad lista på player-sidan med vilka spel man samlat poäng på
-
-- en sida med top-scores i väldigt komprimerat format
-
 *****************************************
  FIXAT
 ******************************************
+
+- en komprimerad lista på player-sidan med vilka spel man samlat poäng på
+
+- en sida med top-scores i väldigt komprimerat format
 
 - fixa så initialer alltid blir uppercase vid registreringen
 
