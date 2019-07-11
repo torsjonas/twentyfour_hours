@@ -49,6 +49,16 @@
         </ul>
         <div class="container center-navbar-container">
             <ul class="navbar-nav mr-auto">
+                {% if TOURNAMENT.playoffs_are_active %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/?division=A">{% trans "A division" %}</a>
+                    </li>
+                {% endif %}
+                {% if TOURNAMENT.number_of_players_in_b_division %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="/?division=B">{% trans "B division" %}</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="/">
                         {% if not TOURNAMENT.playoffs_are_active %}
@@ -61,16 +71,6 @@
                 {% if not TOURNAMENT.disable_score_registering or request.user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "register_score" %}">{% trans "Register Score" %}</a>
-                    </li>
-                {% endif %}
-                {% if TOURNAMENT.playoffs_are_active %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/?division=A">{% trans "Final A division results" %}</a>
-                    </li>
-                {% endif %}
-                {% if TOURNAMENT.number_of_players_in_b_division %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/?division=B">{% trans "Final B division results" %}</a>
                     </li>
                 {% endif %}
                 {% if TOURNAMENT.playoffs_are_active %}
