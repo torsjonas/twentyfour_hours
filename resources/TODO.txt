@@ -2,6 +2,9 @@
  TODO
 ******************************************
 
+- validering på att antal spelare till slutspel är jämna tal
+    ... och minst fyra
+
 *****************************************
  FIXAT
 ******************************************

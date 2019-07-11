@@ -73,8 +73,8 @@ class TournamentForm(ModelForm):
                     self.cleaned_data["number_of_players_in_b_division"]:
                 raise ValidationError(_("You must set the number of players in the divisions if playoffs are active"))
 
-            if not self.cleaned_data["number_of_playoff_matches"]:
-                raise ValidationError(_("You must set the number of playoff matches if playoffs are active"))
+            if not self.cleaned_data["number_of_rounds_against_opponents"]:
+                raise ValidationError(_("You must set the number of rounds against opponents matches if playoffs are active"))
 
             if self.cleaned_data["number_of_players_in_b_division"] and not \
                     self.cleaned_data["number_of_players_in_a_division"]:
@@ -96,9 +96,9 @@ class TournamentForm(ModelForm):
                 raise ValidationError(_("You must set the number of players in A division if you set "
                                         "the number of players in B division"))
 
-        if self.cleaned_data["number_of_playoff_matches"] and not self.cleaned_data["number_of_players_in_a_division"]:
-            raise ValidationError(_("You must set the number of players in A division if you set the number of playoff "
-                                    "matches"))
+        if self.cleaned_data["number_of_rounds_against_opponents"] and not self.cleaned_data["number_of_players_in_a_division"]:
+            raise ValidationError(_("You must set the number of players in A division if you set the number of rounds "
+                                    "against opponents"))
 
     class Meta:
         model = Tournament

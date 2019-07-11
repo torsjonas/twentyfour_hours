@@ -9,6 +9,20 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django_countries.fields import CountryField
 
+# https://codereview.stackexchange.com/a/88688
+def shift_left(lst, n):
+    """Shifts the lst over by n indices
+
+    >>> lst = [1, 2, 3, 4, 5]
+    >>> shift_left(lst, 2)
+    >>> lst
+    [3, 4, 5, 1, 2]
+    """
+    if n < 0:
+        raise ValueError('n must be a positive integer')
+    if n > 0:
+        lst.insert(0, lst.pop(-1))  # shift one place
+        shift_left(lst, n-1)  # repeat
 
 class BaseModel(models.Model):
 
@@ -232,11 +246,9 @@ class MatchManager(models.Manager):
                 if standing["division"] == "B":
                     b_division_standings.append(standing)
 
-        a_division_paired_standings = self.pair_standings(a_division_standings)
-        b_division_paired_standings = self.pair_standings(b_division_standings)
-        matches = self.create_and_save_matches(a_division_paired_standings, tournament)
-        if b_division_paired_standings:
-            matches.append(self.create_and_save_matches(b_division_paired_standings, tournament))
+        matches = self.create_and_save_matches(a_division_standings, tournament)
+        #if b_division_standings:
+        #    matches.append(self.create_and_save_matches(b_division_standings, tournament))
 
         if matches:
             tournament.playoff_matches_are_created = True
@@ -244,35 +256,81 @@ class MatchManager(models.Manager):
 
         return matches
 
+    def pair_players_and_matches(self, standings):
+        paired_matches = []
+        upper_half_standings = standings[:len(standings)//2]
+        lower_half_standings = standings[len(standings)//2:]
+        first_player_ids = []
+        second_player_ids = []
+
+        for standing in upper_half_standings:
+            first_player_ids.append(standing["player"].id)
+        for standing in lower_half_standings:
+            second_player_ids.append(standing["player"].id)
+
+        rounds_paired = 0
+        first_player_id = first_player_ids[0]
+
+        while rounds_paired < len(standings) - 1:
+            for i, player_id in enumerate(first_player_ids):
+                match = dict()
+                match["player_1"] = first_player_ids[i]
+                match["player_2"] = second_player_ids[i]
+                paired_matches.append(match)
+
+            rounds_paired += 1
+            first_second_players_id = second_player_ids[0]
+            last_first_players_id = first_player_ids[-1]
+
+            # move all values in first_player_ids to the right, except the first, and add the first second_player_ids
+            # id to the 2nd position
+            first_player_ids = [first_player_ids[-1]] + first_player_ids[:-1]
+            first_player_ids[0] = first_player_id
+            first_player_ids[1] = first_second_players_id
+
+            # move all values in second_player_ids to the left and add the last first_players_id to the last position
+            # of second_player_ids
+            second_player_ids = second_player_ids[1:] + second_player_ids[:1]
+            second_player_ids[-1] = last_first_players_id
+
+
+            #paired_players.append(pairs)
+
+        return paired_matches
+
     def create_and_save_matches(self, standings, tournament):
         matches = []
-        for index in range(0, len(standings), 2):
-            player1 = standings[index + 1]["player"]
-            player2 = standings[index]["player"]
-            # create random playoff matches then
-            for game in Game.objects.filter(is_active=True).order_by('?')[:tournament.number_of_playoff_matches]:
-                match = Match()
-                match.player1 = player1
-                match.player2 = player2
-                match.game = game
-                match.tournament = tournament
-                match.save()
-                matches.append(match)
+        paired_matches = self.pair_players_and_matches(standings)
+
+        # store the player's standings to determine the playing order
+        player_standings = dict()
+        for standing in standings:
+            player_standings[standing["player"].id] = standing["position"]
+
+        for paired_match in paired_matches:
+            player_1_position = player_standings[paired_match["player_1"]]
+            player_2_position = player_standings[paired_match["player_2"]]
+
+            if player_1_position < player_2_position:
+                player1 = Player.objects.get(id=paired_match["player_1"])
+                player2 = Player.objects.get(id=paired_match["player_2"])
+            else:
+                player1 = Player.objects.get(id=paired_match["player_2"])
+                player2 = Player.objects.get(id=paired_match["player_1"])
+
+            self.create_match_with_random_game(player1, player2, tournament)
 
         return matches
 
-    def pair_standings(self, standings):
-        upper_standings = standings[:len(standings)//2]
-        lower_standings = standings[len(standings)//2:]
-        paired_standings = []
-        lower_standings_index = len(lower_standings)
-        for standing in upper_standings:
-            lower_standings_index -= 1
-            paired_standings.append(standing)
-            paired_standings.append(lower_standings[lower_standings_index])
-
-        return paired_standings
-
+    def create_match_with_random_game(self, player1, player2, tournament):
+        game = Game.objects.filter(is_active=True).order_by('?').first()
+        match = Match()
+        match.player1 = player1
+        match.player2 = player2
+        match.game = game
+        match.tournament = tournament
+        match.save()
+        return match
 
 class GameManager(models.Manager):
 
@@ -434,7 +492,7 @@ class Tournament(models.Model):
     name = models.CharField(max_length=255)
     playoffs_are_active = models.BooleanField(default=False)
     playoffs_are_finalized = models.BooleanField(default=False)
-    number_of_playoff_matches = models.IntegerField(null=True, blank=True)
+    number_of_rounds_against_opponents = models.IntegerField(null=True, blank=True)
     number_of_players_in_a_division = models.IntegerField(null=True, blank=True)
     number_of_players_in_b_division = models.IntegerField(null=True, blank=True)
     playoff_matches_are_created = models.BooleanField(default=False)

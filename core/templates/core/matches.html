@@ -25,11 +25,6 @@
     <tbody>
 
     {% for match in matches %}
-        {% ifchanged match.player_ids_string %}
-            <tr class="spacer">
-                <td colspan="10"></td>
-            </tr>
-        {% endifchanged %}
         <tr class="{% cycle 'row1' 'row2' %}">
             <td><a href="{{ match.player1.get_url }}">{{ match.player1.get_initials_and_name }}</a></td>
             <td><small>{% trans "vs." %}</small></td>
