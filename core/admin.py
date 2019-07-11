@@ -116,7 +116,7 @@ class TournamentAdmin(BaseAdmin):
     list_filter = ("is_active", "playoffs_are_active", "start_date",)
 
 class ScoreAdmin(BaseAdmin):
-    list_display = ("game", "score", "player", "tournament")
+    list_display = ("game", "score", "player", "tournament", "date_created")
     search_fields = ("game__name", "score", "player__first_name", "player__last_name", "player__initials", "tournament__name")
     list_filter = (('game', admin.RelatedOnlyFieldListFilter), ('player', admin.RelatedOnlyFieldListFilter),
                    ('tournament', admin.RelatedOnlyFieldListFilter),)
@@ -148,7 +148,7 @@ class MatchForm(ModelForm):
 
 
 class MatchAdmin(BaseAdmin):
-    list_display = ("player1", "player2", "winner", "tournament", "is_tiebreaker")
+    list_display = ("player1", "player2", "winner", "tournament", "is_tiebreaker", "date_created")
     search_fields = ("player1__first_name", "player1__last_name", "player1__initials", "player2__first_name",
                      "player2__last_name", "player2__initials", "tournament__name")
     list_filter = (('tournament', admin.RelatedOnlyFieldListFilter), "is_tiebreaker")
