@@ -34,7 +34,7 @@
                 <td colspan="10"><h5>{{ match.division }} {% trans "Division" %}</h5>
             </tr>
         {% endifchanged %}
-        {% ifchanged match.round %}
+        {% ifchanged match.round and rounds_are_different %}
             <tr>
                 <td colspan="10"><small><strong>{% trans "Round" %} {{ match.round }}</strong></small></td>
             </tr>

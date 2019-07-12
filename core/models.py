@@ -9,6 +9,7 @@ from django.urls import reverse
 from django.utils.translation import ugettext as _
 from django_countries.fields import CountryField
 
+
 class BaseModel(models.Model):
 
     def get_admin_url(self):
@@ -134,6 +135,15 @@ class TournamentManager(models.Manager):
 
         return position_standings
 
+    def get_division_standings(self, division):
+        standings, dummy = Tournament.objects.get_standings_and_game_scores(get_game_scores=False)
+        filtered_standings = []
+        for standing in standings:
+            if standing["division"] == division:
+                filtered_standings.append(standing)
+
+        return filtered_standings
+
     def get_standings_and_game_scores(self, division=None, get_game_scores=True, skip_standings=False):
         standings = []
 
@@ -216,15 +226,12 @@ class MatchManager(models.Manager):
 
     def set_round_of_matches(self, matches, division, tournament):
         round_number = 1
+        division_standings = Tournament.objects.get_division_standings(division)
         for index, match in enumerate(matches):
             match_number = index + 1
             match.round = round_number
-            if tournament.number_of_players_in_a_division:
-                if division == "A" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
-                    round_number += 1
-            if tournament.number_of_players_in_a_division:
-                if division == "B" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
-                    round_number += 1
+            if match_number % (len(division_standings) / 2) == 0:
+                round_number += 1
 
     def create_playoff_matches(self):
         tournament = get_object_or_None(Tournament, is_active=True)

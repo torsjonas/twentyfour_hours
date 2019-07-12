@@ -190,8 +190,19 @@ class MatchesView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["matches"] = Match.objects.get_active_matches()
+        matches = Match.objects.get_active_matches()
+        context["matches"] = matches
         context["match_points"] = get_object_or_None(MatchPoints, id=1)
+        # to fix a bug that occurs if the number of players to playoffs in the division
+        # is higher than the actual number of players that qualified the "rounds"-bit will
+        # be messed up
+        context["rounds_are_different"] = False
+        first_round = matches[0].round
+        for match in matches:
+            if match.round != first_round:
+                print("RUNNING!")
+                context["rounds_are_different"] = True
+
         return context
 
 
