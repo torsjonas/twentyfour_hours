@@ -91,7 +91,7 @@
                 {% if has_tiebreak_points %}
                     <th scope="col">{% trans "Tiebreak wins" %}</th>
                 {% endif %}
-                {% if has_match_points %}
+                {% if request.GET.division %}
                     <th scope="col">{% trans "High score points" %}</th>
                     <th scope="col">{% trans "Match points" %}</th>
                 {% endif %}
@@ -126,7 +126,7 @@
                         {% endif %}
                     </td>
                 {% endif %}
-                {% if has_match_points %}
+                {% if request.GET.division %}
                     <td>
                         <a href="/">
                         {% if not standing.high_score_points %}

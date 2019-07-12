@@ -39,10 +39,6 @@ class IndexView(TemplateView):
             if standing["tiebreak_points"] != 0:
                 context["has_tiebreak_points"] = True
 
-        context["has_match_points"] = False
-        for standing in standings:
-            if standing["match_points"] != 0:
-                context["has_match_points"] = True
         return context
 
 
