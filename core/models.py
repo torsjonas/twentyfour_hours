@@ -238,8 +238,7 @@ class MatchManager(models.Manager):
         if tournament.playoff_matches_are_created:
             raise Exception("The playoff matches have already been created for the active tournament")
 
-
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores()
+        standings, dummy = Tournament.objects.get_standings_and_game_scores(get_game_scores=False)
         a_division_standings = []
         b_division_standings = []
         for standing in standings:
@@ -361,7 +360,6 @@ class MatchManager(models.Manager):
     def get_random_playoff_game(self):
         return Game.objects.filter(is_active_in_playoffs=True).order_by('?').first()
 
-
     def create_match(self, player1, player2, game, tournament, division):
         match = Match()
         match.game = game
@@ -372,6 +370,7 @@ class MatchManager(models.Manager):
         match.division = division
         match.save()
         return match
+
 
 class GameManager(models.Manager):
 
