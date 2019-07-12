@@ -219,10 +219,12 @@ class MatchManager(models.Manager):
         for index, match in enumerate(matches):
             match_number = index + 1
             match.round = round_number
-            if division == "A" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
-                round_number += 1
-            if division == "B" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
-                round_number += 1
+            if tournament.number_of_players_in_a_division:
+                if division == "A" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
+                    round_number += 1
+            if tournament.number_of_players_in_a_division:
+                if division == "B" and (match_number % (tournament.number_of_players_in_a_division / 2) == 0):
+                    round_number += 1
 
     def create_playoff_matches(self):
         tournament = get_object_or_None(Tournament, is_active=True)
