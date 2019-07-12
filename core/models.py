@@ -276,10 +276,6 @@ class MatchManager(models.Manager):
 
     def pair_players_and_matches(self, standings, odd=False):
         # make this player 1-5 to make it debuggable
-        debug_standings = []
-        for index, standing in enumerate(standings):
-            standing["player"].id = index + 1
-
         paired_matches = []
         upper_half_standings = standings[:len(standings)//2]
         lower_half_standings = standings[len(standings)//2:]
