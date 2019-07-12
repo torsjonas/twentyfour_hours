@@ -51,6 +51,9 @@
                     <td>{{ game_score.score|intdot }}</td>
                     <td><a href="{{ game_score.player.get_url }}">{{ game_score.player.get_initials_and_name }}</a></td>
                     <td><i class="{{ game_score.player.country.flag_css }}"></i></td>
+                    {% if request.user.is_staff %}
+                        <td><small><a href="{{ game_score.get_admin_url }}">{% trans "Edit score" %}</a></small></td>
+                    {% endif %}
                 </tr>
             {% endfor %}
             {% if player %}

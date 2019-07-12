@@ -503,7 +503,7 @@ class Player(models.Model):
         return self.initials + " - " + self.first_name + " " + self.last_name
 
 
-class Score(models.Model):
+class Score(BaseModel):
     game = models.ForeignKey(Game, null=False, blank=False, on_delete=models.PROTECT)
     score = models.BigIntegerField(null=False, blank=False)
     date_created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
