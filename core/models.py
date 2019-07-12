@@ -220,11 +220,11 @@ class MatchManager(models.Manager):
         # set the round of the matches
         a_division_matches = self.get_division_matches(matches, "A")
         b_division_matches = self.get_division_matches(matches, "B")
-        self.set_round_of_matches(a_division_matches, "A", tournament)
-        self.set_round_of_matches(b_division_matches, "B", tournament)
+        self.set_round_of_matches(a_division_matches, "A")
+        self.set_round_of_matches(b_division_matches, "B")
         return matches
 
-    def set_round_of_matches(self, matches, division, tournament):
+    def set_round_of_matches(self, matches, division):
         round_number = 1
         division_standings = Tournament.objects.get_division_standings(division)
         for index, match in enumerate(matches):
