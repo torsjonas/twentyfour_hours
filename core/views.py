@@ -10,7 +10,7 @@ from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, CreateView, DetailView
 
-from core.models import Player, Score, Game, Tournament, Points, Match, KeyValue
+from core.models import Player, Score, Game, Tournament, Points, Match, KeyValue, MatchPoints
 
 
 class IndexView(TemplateView):
@@ -170,7 +170,9 @@ class MatchesView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context["matches"] = Match.objects.get_active_matches()
+        context["match_points"] = get_object_or_None(MatchPoints, id=1)
         return context
+
 
 @staff_member_required
 def create_playoff_matches(request):
