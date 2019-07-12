@@ -116,11 +116,11 @@ class TournamentForm(ModelForm):
             raise ValidationError(_("You must set the number of players in A division if you set the number of rounds "
                                     "against opponents"))
 
-        if self.cleaned_data["number_of_players_in_a_division"] and self.cleaned_data["number_of_players_in_a_division"] < 4:
-            raise ValidationError(_("The number of players in A division must be at least 4"))
+        if self.cleaned_data["number_of_players_in_a_division"] and self.cleaned_data["number_of_players_in_a_division"] < 2:
+            raise ValidationError(_("The number of players in A division must be at least 2"))
 
-        if self.cleaned_data["number_of_players_in_b_division"] and self.cleaned_data["number_of_players_in_b_division"] < 4:
-            raise ValidationError(_("The number of players in B division must be at least 4"))
+        if self.cleaned_data["number_of_players_in_b_division"] and self.cleaned_data["number_of_players_in_b_division"] < 2:
+            raise ValidationError(_("The number of players in B division must be at least 2"))
 
     class Meta:
         model = Tournament
