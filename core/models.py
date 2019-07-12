@@ -304,7 +304,7 @@ class MatchManager(models.Manager):
         matches = []
         paired_matches = self.pair_players_and_matches(standings)
         number_of_players = len(standings)
-        number_of_active_games = Game.objects.filter(is_active=True, enabled_in_playoffs=True).count()
+        number_of_active_games = Game.objects.filter(is_active_in_playoffs=True).count()
 
         if number_of_players > number_of_active_games:
             raise Exception("There are not enough active games to create playoff matches")
@@ -358,7 +358,7 @@ class MatchManager(models.Manager):
             return game
 
     def get_random_playoff_game(self):
-        return Game.objects.filter(is_active=True, enabled_in_playoffs=True).order_by('?').first()
+        return Game.objects.filter(is_active_in_playoffs=True).order_by('?').first()
 
 
     def create_match(self, player1, player2, game, tournament, division):
@@ -464,7 +464,7 @@ class Game(models.Model):
     name = models.CharField(max_length=255, unique=True)
     abbreviation = models.CharField(max_length=16, unique=True)
     is_active = models.BooleanField(default=False, null=False, blank=False)
-    enabled_in_playoffs = models.BooleanField(default=True)
+    is_active_in_playoffs = models.BooleanField(default=False)
 
     objects = GameManager()
 

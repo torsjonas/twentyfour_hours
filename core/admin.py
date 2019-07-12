@@ -23,19 +23,19 @@ def inactivate_games(modeladmin, request, queryset):
 
 inactivate_games.short_description = _("Inactivate selected games")
 
-def enable_games_in_playoff(modeladmin, request, queryset):
+def activate_games_in_playoff(modeladmin, request, queryset):
     for game in queryset:
-        game.enabled_in_playoffs = True
+        game.is_active_in_playoffs = True
         game.save()
 
-enable_games_in_playoff.short_description = _("Enable game in playoffs")
+activate_games_in_playoff.short_description = _("Activate game in playoffs")
 
-def disable_games_in_playoff(modeladmin, request, queryset):
+def inactivate_games_in_playoff(modeladmin, request, queryset):
     for game in queryset:
-        game.enabled_in_playoffs = False
+        game.is_active_in_playoffs = False
         game.save()
 
-disable_games_in_playoff.short_description = _("Disable game in playoffs")
+inactivate_games_in_playoff.short_description = _("Inactivate game in playoffs")
 
 
 def inactivate_games(modeladmin, request, queryset):
@@ -70,10 +70,10 @@ class BaseAdmin(admin.ModelAdmin):
 
 
 class GameAdmin(ModelAdmin):
-    list_display = ("name", "abbreviation", "is_active", "enabled_in_playoffs")
-    list_filter = ("is_active", "enabled_in_playoffs")
+    list_display = ("name", "abbreviation", "is_active", "is_active_in_playoffs")
+    list_filter = ("is_active", "is_active_in_playoffs")
     search_fields = ("name", "abbreviation")
-    actions = [activate_games, inactivate_games, enable_games_in_playoff, disable_games_in_playoff]
+    actions = [activate_games, inactivate_games, activate_games_in_playoff, inactivate_games_in_playoff]
 
 
 class TournamentForm(ModelForm):
