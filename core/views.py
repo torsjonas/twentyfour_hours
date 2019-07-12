@@ -6,6 +6,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.forms import TextInput, ModelForm, CharField, BooleanField
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, CreateView, DetailView
@@ -119,7 +120,6 @@ class ScoreForm(ModelForm):
 
 class ScoreCreateView(CreateView):
     template_name = "core/register_score.html"
-    success_url = reverse_lazy('registered_score')
     model = Score
     form_class = ScoreForm
     form_id = "score_form"
@@ -131,6 +131,9 @@ class ScoreCreateView(CreateView):
                                 expires=datetime.strptime('2090-02-10' , '%Y-%m-%d'))
 
         return response
+
+    def get_success_url(self):
+        return reverse("registered_score") + "?score_id=%s" % self.object.id
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -162,6 +165,24 @@ class ScoreCreateView(CreateView):
 
 class ScoreCreatedView(TemplateView):
     template_name = "core/registered_score.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        score = get_object_or_404(Score, id=self.request.GET.get("score_id"))
+        context["score"] = score
+        # ouch, again, get the entire game_scores to show points and position
+        standings, game_scores = Tournament.objects.get_standings_and_game_scores(skip_standings=True)
+        context["points"] = 0
+        for game in game_scores:
+            if game == score.game:
+                for s in game.scores:
+                    if s == score:
+                        context["points"] = s.points
+                        context["position"] = s.position
+
+        context["score_ends_with_zero"] = (score.score % 10 == 0)
+
+        return context
 
 
 class MatchesView(TemplateView):

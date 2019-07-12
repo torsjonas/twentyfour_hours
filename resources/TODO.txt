@@ -2,6 +2,10 @@
  TODO
 ******************************************
 
+- lista scoren på done-sidan för score och dessutom position och poäng på skåren
+    http://thefezen.ddns.net/register-score/done?score_id=159
+    ... varning om poängen inte slutar på 0
+
 *****************************************
  FIXAT
 ******************************************

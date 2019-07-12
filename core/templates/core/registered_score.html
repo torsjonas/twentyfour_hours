@@ -1,10 +1,30 @@
 {% extends "core/base.html" %}
-{% load i18n %}
+{% load i18n tags %}
 {% block content %}
 <h1>{% trans "Registered Score" %}</h1>
     <p>
         {% trans "Thanks. Your score has been registered." %}
     </p>
+    <hr />
+    <h3>{% trans "Player" %}</h3>
+    <a href="{{ score.player.get_url }}">{{ score.player.get_initials_and_name }}</a>
+    <h3>{% trans "Game" %}</h3>
+    <a href="/#{{ score.game.id }}">{{ score.game.name }}</a>
+    <h3>{% trans "Score" %}</h3>
+    {{ score.score|intdot }}
+
+    {% if not score_ends_with_zero %}
+        <div class="alert alert-primary" role="alert">
+        {% trans "The score doesn't end with a zero. Make sure you entered the correct score." %}
+        </div>
+    {% endif %}
+
+    <h3>{% trans "Positon" %}</h3>
+    {{ position }}
+    <h3>{% trans "Points" %}</h3>
+    {{ points }}
+    <hr />
+
     <p>
         <a href="{% url "index" %}">{% trans "View standings" %}</a>
     </p>
