@@ -197,11 +197,11 @@ class MatchesView(TemplateView):
         # is higher than the actual number of players that qualified the "rounds"-bit will
         # be messed up
         context["rounds_are_different"] = False
-        first_round = matches[0].round
-        for match in matches:
-            if match.round != first_round:
-                print("RUNNING!")
-                context["rounds_are_different"] = True
+        if matches:
+            first_round = matches[0].round
+            for match in matches:
+                if match.round != first_round:
+                    context["rounds_are_different"] = True
 
         return context
 
