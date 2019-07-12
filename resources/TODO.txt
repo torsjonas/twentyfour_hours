@@ -2,9 +2,17 @@
  TODO
 ******************************************
 
+- en help_text på winner i admin
+
+- testa att generera matcher med tre slutspelsspelare
+
+- testa med slutspelsmatcher för A och B-division
+
 *****************************************
  FIXAT
 ******************************************
+
+- kolla texten på varningen för poäng som inte slutar på 0
 
 - roundsen för matcherna:
     http://localhost:8000/matches/
