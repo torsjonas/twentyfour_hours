@@ -552,10 +552,8 @@ class Tournament(models.Model):
     disable_score_registering = models.BooleanField(default=False)
 
     def a_division_is_finalized(self):
-        print("a_division_is_finalized")
         for match in Match.objects.filter(tournament=self, division="A"):
             if not match.winner:
-                print("FALSE!")
                 return False
 
         return True
