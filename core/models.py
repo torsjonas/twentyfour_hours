@@ -247,9 +247,12 @@ class MatchManager(models.Manager):
                 if standing["division"] == "B":
                     b_division_standings.append(standing)
 
-        matches = self.create_and_save_matches(a_division_standings, tournament, "A")
+        for i in range(0, tournament.number_of_rounds_against_opponents):
+            matches = self.create_and_save_matches(a_division_standings, tournament, "A")
+
         if b_division_standings:
-            matches.extend(self.create_and_save_matches(b_division_standings, tournament, "B"))
+            for i in range(0, tournament.number_of_rounds_against_opponents):
+                matches.extend(self.create_and_save_matches(b_division_standings, tournament, "B"))
 
         if matches:
             tournament.playoff_matches_are_created = True
