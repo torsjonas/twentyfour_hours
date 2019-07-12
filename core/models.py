@@ -14,21 +14,6 @@ def median_value(queryset, term):
     return queryset.values_list(term, flat=True).order_by(term)[int(round(count/2))]
 
 
-# https://codereview.stackexchange.com/a/88688
-def shift_left(lst, n):
-    """Shifts the lst over by n indices
-
-    >>> lst = [1, 2, 3, 4, 5]
-    >>> shift_left(lst, 2)
-    >>> lst
-    [3, 4, 5, 1, 2]
-    """
-    if n < 0:
-        raise ValueError('n must be a positive integer')
-    if n > 0:
-        lst.insert(0, lst.pop(-1))  # shift one place
-        shift_left(lst, n-1)  # repeat
-
 class BaseModel(models.Model):
 
     def get_admin_url(self):
