@@ -2,13 +2,13 @@
  TODO
 ******************************************
 
-- lista scoren på done-sidan för score och dessutom position och poäng på skåren
-    http://thefezen.ddns.net/register-score/done?score_id=159
-    ... varning om poängen inte slutar på 0
-
 *****************************************
  FIXAT
 ******************************************
+
+- lista scoren på done-sidan för score och dessutom position och poäng på skåren
+    http://thefezen.ddns.net/register-score/done?score_id=159
+    ... varning om poängen inte slutar på 0
 
 - när man ska lägga till match så får det inte filtreras på winner:
     http://thefezen.ddns.net/admin/core/match/add/
