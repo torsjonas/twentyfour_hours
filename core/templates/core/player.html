@@ -14,6 +14,10 @@
         </h3>
     {% endif %}
 
+    {% if player.get_ifpa_url %}
+        <a href="{{ player.get_ifpa_url }}">{% trans "View on IPFA" %}</a>
+    {% endif %}
+
     {% if score_overview %}
         <div class="small-spacer"></div>
         <h3>{% trans "Score overview" %}</h3>

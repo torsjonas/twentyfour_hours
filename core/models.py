@@ -488,6 +488,11 @@ class Player(models.Model):
     def get_url(self):
         return reverse("player_detail", args=[self.id])
 
+    def get_ifpa_url(self):
+        if self.ifpa_id:
+            return "https://www.ifpapinball.com/player.php?p=%s" % self.ifpa_id
+        return None
+
     def get_initials_and_name(self):
         return self.initials + " - " + self.first_name + " " + self.last_name
 
