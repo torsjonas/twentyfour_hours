@@ -299,7 +299,6 @@ class MatchManager(models.Manager):
             second_player_ids = second_player_ids[1:] + second_player_ids[:1]
             second_player_ids[-1] = last_first_players_id
 
-
         return paired_matches
 
     def create_and_save_matches(self, standings, tournament, division):

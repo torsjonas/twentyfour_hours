@@ -107,14 +107,6 @@ class TournamentForm(ModelForm):
         if self.cleaned_data["number_of_players_in_a_division"] and not self.cleaned_data["playoffs_are_active"]:
                 raise ValidationError(_("You must set playoffs to active if you set the number of players in A division"))
 
-        if self.cleaned_data["number_of_players_in_a_division"] \
-                and self.cleaned_data["number_of_players_in_a_division"] % 2 != 0:
-                raise ValidationError(_("Number of players in A division must be an even number"))
-
-        if self.cleaned_data["number_of_players_in_b_division"] \
-                and self.cleaned_data["number_of_players_in_b_division"] % 2 != 0:
-                raise ValidationError(_("Number of players in B division must be an even number"))
-
         if self.cleaned_data["number_of_players_in_b_division"] and \
                 not self.cleaned_data["number_of_players_in_a_division"]:
                 raise ValidationError(_("You must set the number of players in A division if you set "
@@ -124,18 +116,11 @@ class TournamentForm(ModelForm):
             raise ValidationError(_("You must set the number of players in A division if you set the number of rounds "
                                     "against opponents"))
 
-        if self.cleaned_data["number_of_players_in_a_division"] and (self.cleaned_data["number_of_players_in_a_division"] % 2 != 0):
-            raise ValidationError(_("The number of players in A division must be an even number"))
-
-        if self.cleaned_data["number_of_players_in_b_division"] and (self.cleaned_data["number_of_players_in_b_division"] % 2 != 0):
-            raise ValidationError(_("The number of players in B division must be an even number"))
-
         if self.cleaned_data["number_of_players_in_a_division"] and self.cleaned_data["number_of_players_in_a_division"] < 4:
             raise ValidationError(_("The number of players in A division must be at least 4"))
 
         if self.cleaned_data["number_of_players_in_b_division"] and self.cleaned_data["number_of_players_in_b_division"] < 4:
             raise ValidationError(_("The number of players in B division must be at least 4"))
-
 
     class Meta:
         model = Tournament
