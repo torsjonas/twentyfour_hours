@@ -22,9 +22,6 @@ class IndexView(TemplateView):
         standings, game_scores = Tournament.objects.get_standings_and_game_scores(division)
         active_tournament = get_object_or_None(Tournament, is_active=True)
         context["standings"] = standings
-        if (division and active_tournament) and not active_tournament.playoffs_are_finalized:
-            # remove standings to not display any results
-            context["standings"] = None
         context["game_scores"] = game_scores
         context["active_tournament"] = active_tournament
         context["has_tiebreak_points"] = False

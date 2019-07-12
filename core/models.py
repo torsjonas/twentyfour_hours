@@ -226,17 +226,7 @@ class MatchManager(models.Manager):
 
     def get_active_matches(self):
         tournament = Tournament.objects.get(is_active=True)
-        # ouch, get the entire standings just to set the division of the match
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores(get_game_scores=False)
-        matches = []
-        for index, match in enumerate(Match.objects.filter(is_tiebreaker=False, tournament=tournament)):
-            # not an ideal loop, nevertheless
-            for standing in standings:
-                if standing["player"] == match.player1:
-                    match.division = standing["division"]
-                    matches.append(match)
-                    break
-
+        matches = Match.objects.filter(is_tiebreaker=False, tournament=tournament)
         # set the round of the matches
         a_division_matches = self.get_division_matches(matches, "A")
         b_division_matches = self.get_division_matches(matches, "B")
@@ -277,9 +267,9 @@ class MatchManager(models.Manager):
                 if standing["division"] == "B":
                     b_division_standings.append(standing)
 
-        matches = self.create_and_save_matches(a_division_standings, tournament)
+        matches = self.create_and_save_matches(a_division_standings, tournament, "A")
         if b_division_standings:
-            matches.append(self.create_and_save_matches(b_division_standings, tournament))
+            matches.append(self.create_and_save_matches(b_division_standings, tournament, "B"))
 
         if matches:
             tournament.playoff_matches_are_created = True
@@ -329,7 +319,7 @@ class MatchManager(models.Manager):
 
         return paired_matches
 
-    def create_and_save_matches(self, standings, tournament):
+    def create_and_save_matches(self, standings, tournament, division):
         matches = []
         paired_matches = self.pair_players_and_matches(standings)
 
@@ -359,7 +349,7 @@ class MatchManager(models.Manager):
             player_1_position = player_standings[paired_match["player_1"]]
             player_2_position = player_standings[paired_match["player_2"]]
 
-            if player_1_position < player_2_position:
+            if player_1_position > player_2_position:
                 player1 = Player.objects.get(id=paired_match["player_1"])
                 player2 = Player.objects.get(id=paired_match["player_2"])
             else:
@@ -370,7 +360,7 @@ class MatchManager(models.Manager):
                 # empty the games in the round then
                 games_in_round = []
 
-            self.create_match(player1, player2, game, tournament)
+            self.create_match(player1, player2, game, tournament, division)
 
         return matches
 
@@ -385,13 +375,14 @@ class MatchManager(models.Manager):
         return Game.objects.filter(is_active=True).order_by('?').first()
 
 
-    def create_match(self, player1, player2, game, tournament):
+    def create_match(self, player1, player2, game, tournament, division):
         match = Match()
         match.game = game
         match.player1 = player1
         match.player2 = player2
         match.game = game
         match.tournament = tournament
+        match.division = division
         match.save()
         return match
 
@@ -554,12 +545,28 @@ class Tournament(models.Model):
     end_date = models.DateTimeField(null=False, blank=False)
     name = models.CharField(max_length=255)
     playoffs_are_active = models.BooleanField(default=False)
-    playoffs_are_finalized = models.BooleanField(default=False)
     number_of_rounds_against_opponents = models.IntegerField(null=True, blank=True)
     number_of_players_in_a_division = models.IntegerField(null=True, blank=True)
     number_of_players_in_b_division = models.IntegerField(null=True, blank=True)
     playoff_matches_are_created = models.BooleanField(default=False)
     disable_score_registering = models.BooleanField(default=False)
+
+    def a_division_is_finalized(self):
+        print("a_division_is_finalized")
+        for match in Match.objects.filter(tournament=self, division="A"):
+            if not match.winner:
+                print("FALSE!")
+                return False
+
+        return True
+
+    def b_division_is_finalized(self):
+        # duplicated-ish code from a_division_is_finalized ... d-oh!
+        for match in Match.objects.filter(tournament=self, division="B"):
+            if not match.winner:
+                return False
+
+        return True
 
     objects = TournamentManager()
 
@@ -574,6 +581,7 @@ class Match(BaseModel):
     is_tiebreaker = models.BooleanField(default=False)
     winner = models.ForeignKey(Player, null=True, blank=True, on_delete=models.PROTECT, related_name='match_winner')
     date_created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
+    division = models.CharField(max_length=1, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, null=False, blank=False, on_delete=models.PROTECT)
 
     objects = MatchManager()

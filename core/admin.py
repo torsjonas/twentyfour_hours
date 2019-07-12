@@ -161,10 +161,10 @@ class MatchForm(ModelForm):
 
 
 class MatchAdmin(BaseAdmin):
-    list_display = ("player1", "player2", "winner", "tournament", "is_tiebreaker", "date_created")
+    list_display = ("player1", "player2", "winner", "tournament", "is_tiebreaker", "date_created", "division")
     search_fields = ("player1__first_name", "player1__last_name", "player1__initials", "player2__first_name",
                      "player2__last_name", "player2__initials", "tournament__name")
-    list_filter = (('tournament', admin.RelatedOnlyFieldListFilter), "is_tiebreaker")
+    list_filter = (('tournament', admin.RelatedOnlyFieldListFilter), "division", "is_tiebreaker")
 
     form = MatchForm
 

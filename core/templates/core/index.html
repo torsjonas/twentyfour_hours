@@ -5,7 +5,22 @@
 
 {% if active_tournament %}
     {% if request.GET.division %}
-        <h1>{% trans "Final results of" %} {{ request.GET.division }} {% trans "division" %}</h1>
+        <h1>
+            {% if request.GET.division == "A" %}
+                {% if active_tournament.a_division_is_finalized %}
+                    {% trans "Final results of A division" %}
+                {% else %}
+                    {% trans "Standings in A division" %}
+                {% endif %} 
+            {% endif %}
+            {% if request.GET.division == "B" %}
+                {% if active_tournament.b_division_is_finalized %}
+                    {% trans "Final results of B division" %}
+                {% else %}
+                    {% trans "Standings in B division" %}
+                {% endif %} 
+            {% endif %}
+        </h1>
         {% if not standings %}
             {% trans "There are no final results, yet." %}
         {% endif %}
@@ -98,17 +113,25 @@
                 {% endif %}
                 {% if has_match_points %}
                     <td>
-                        {% if standing.high_score_points %}
+                        <a href="/">
+                        {% if not standing.high_score_points %}
+                            0
+                        {% else %}
                             {{ standing.high_score_points }}
                         {% endif %}
+                        </a>
                     </td>
                     <td>
-                        {% if standing.match_points %}
+                        <a href="{% url "matches" %}">
+                        {% if not standing.match_points %}
+                            0
+                        {% else %}
                             {{ standing.match_points }}
                         {% endif %}
+                        </a>
                     </td>
                 {% endif %}
-                <td>{{ standing.total_points }}</td>
+                <td><strong>{{ standing.total_points }}</strong></td>
             </tr>
         {% endfor %}
         </tbody>
