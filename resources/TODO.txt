@@ -2,13 +2,13 @@
  TODO
 ******************************************
 
-- roundsen för matcherna:
-    http://localhost:8000/matches/
-    ... blir uppfuckade om det är udda
-
 *****************************************
  FIXAT
 ******************************************
+
+- roundsen för matcherna:
+    http://localhost:8000/matches/
+    ... blir uppfuckade om det är udda
 
 - lista scoren på done-sidan för score och dessutom position och poäng på skåren
     http://thefezen.ddns.net/register-score/done?score_id=159
