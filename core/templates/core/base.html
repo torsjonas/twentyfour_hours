@@ -59,6 +59,11 @@
                         <a class="nav-link" href="/?division=B">{% trans "B division" %}</a>
                     </li>
                 {% endif %}
+                {% if TOURNAMENT.playoffs_are_active %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url "matches" %}">{% trans "Playoff matches" %}</a>
+                    </li>
+                {% endif %}
                 <li class="nav-item">
                     <a class="nav-link" href="/">
                         {% if not TOURNAMENT.playoffs_are_active %}
@@ -71,11 +76,6 @@
                 {% if not TOURNAMENT.disable_score_registering or request.user.is_staff %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "register_score" %}">{% trans "Register Score" %}</a>
-                    </li>
-                {% endif %}
-                {% if TOURNAMENT.playoffs_are_active %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url "matches" %}">{% trans "Playoff matches" %}</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
