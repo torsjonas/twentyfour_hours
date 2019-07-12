@@ -598,11 +598,14 @@ class Tournament(models.Model):
 
 
 class Match(BaseModel):
+    winner_help_text = """If you need other options in the select please select Player 1 and Player 2 and click 'Save and continue editing'"""
+
     player1 = models.ForeignKey(Player, null=False, blank=False, on_delete=models.PROTECT, related_name='match_player1')
     player2 = models.ForeignKey(Player, null=False, blank=False, on_delete=models.PROTECT, related_name='match_player2')
     game = models.ForeignKey(Game, null=False, blank=False, on_delete=models.PROTECT)
     is_tiebreaker = models.BooleanField(default=False)
-    winner = models.ForeignKey(Player, null=True, blank=True, on_delete=models.PROTECT, related_name='match_winner')
+    winner = models.ForeignKey(Player, null=True, blank=True, on_delete=models.PROTECT, related_name='match_winner',
+                               help_text=winner_help_text)
     date_created = models.DateTimeField(auto_now_add=True, null=False, blank=False)
     division = models.CharField(max_length=1, null=True, blank=True)
     tournament = models.ForeignKey(Tournament, null=False, blank=False, on_delete=models.PROTECT)
