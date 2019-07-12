@@ -17,6 +17,10 @@ def roundup(x):
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
+        '''
+        for match in Match.objects.get_active_matches():
+            print(match.round)
+        '''
         for match in Match.objects.all():
             match.delete()
 

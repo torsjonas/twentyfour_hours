@@ -227,10 +227,21 @@ class MatchManager(models.Manager):
     def set_round_of_matches(self, matches, division):
         round_number = 1
         division_standings = Tournament.objects.get_division_standings(division)
+        odd = False
+        if len(division_standings) % 2 != 0:
+            odd = True
+
+        if not odd:
+            number_of_matches_per_round = len(division_standings) / 2
+        else:
+            number_of_matches_per_round = round(len(division_standings) / 2)
+
+        print(number_of_matches_per_round)
+
         for index, match in enumerate(matches):
             match_number = index + 1
             match.round = round_number
-            if match_number % (len(division_standings) / 2) == 0:
+            if match_number % number_of_matches_per_round == 0:
                 round_number += 1
 
     def create_playoff_matches(self):
