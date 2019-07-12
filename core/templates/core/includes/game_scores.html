@@ -58,7 +58,7 @@
             {% endfor %}
             {% if player %}
                 <tr>
-                    <td colspan="10"><small><a href="/#{{ game_score.id }}">{% trans "View all game scores" %}</a></small></td>
+                    <td colspan="10"><small><a href="/#{{ game_score.id }}">{% trans "View all" %} {{ game_score.name }} {% trans "scores" %}</a></small></td>
                 </tr>
             {% endif %}
             <tr class="spacer"><td colspan="10"></td></tr>

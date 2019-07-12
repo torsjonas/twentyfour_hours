@@ -332,8 +332,8 @@ class MatchManager(models.Manager):
         odd = False
         if len(standings) % 2 != 0:
             odd = True
-        paired_matches = self.pair_players_and_matches(standings, odd=odd)
 
+        paired_matches = self.pair_players_and_matches(standings, odd=odd)
         number_of_players = len(standings)
         number_of_active_games = Game.objects.filter(is_active_in_playoffs=True).count()
 
