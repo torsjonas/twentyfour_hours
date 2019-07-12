@@ -24,6 +24,20 @@
         {% if not standings %}
             {% trans "There are no final results, yet." %}
         {% endif %}
+
+        {% if request.GET.division == "A" and not active_tournament.a_division_is_finalized %}
+            <div class="alert alert-primary" role="alert">
+                {% trans "Please note that the results aren't finalized yet." %} <a href="{% url "matches" %}">{% trans "View matches" %}<a>
+            </div>
+        {% endif %}
+        {% if request.GET.division == "B" and not active_tournament.b_division_is_finalized %}
+            {% comment %} damn you django templates for being so simplistic, duplicated html/text from just above {% endcomment %}
+            <div class="alert alert-primary" role="alert">
+                {% trans "Please note that the results aren't finalized yet." %} <a href="{% url "matches" %}">{% trans "View matches" %}<a>
+            </div>
+        {% endif %}
+
+
     {% endif %}
     {% if not request.GET.division %}
         {% if not TOURNAMENT.playoffs_are_active %}

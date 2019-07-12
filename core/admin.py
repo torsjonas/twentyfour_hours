@@ -150,9 +150,10 @@ class MatchForm(ModelForm):
             self.fields["tournament"].initial = tournament
 
     def clean_winner(self):
-        if self.cleaned_data["player1"] and self.cleaned_data["player2"]:
-            if (self.cleaned_data["winner"] != self.cleaned_data["player1"]) and (self.cleaned_data["winner"] != self.cleaned_data["player2"]):
-                raise ValidationError(_("The winner must be one of the selected players"))
+        if self.cleaned_data["winner"]:
+            if self.cleaned_data["player1"] and self.cleaned_data["player2"]:
+                if (self.cleaned_data["winner"] != self.cleaned_data["player1"]) and (self.cleaned_data["winner"] != self.cleaned_data["player2"]):
+                    raise ValidationError(_("The winner must be one of the selected players"))
         return self.cleaned_data["winner"]
 
     class Meta:
