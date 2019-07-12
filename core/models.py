@@ -236,8 +236,6 @@ class MatchManager(models.Manager):
         else:
             number_of_matches_per_round = round(len(division_standings) / 2)
 
-        print(number_of_matches_per_round)
-
         for index, match in enumerate(matches):
             match_number = index + 1
             match.round = round_number
