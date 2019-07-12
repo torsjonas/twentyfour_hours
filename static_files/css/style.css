@@ -35,6 +35,10 @@ li.nav-item {
     margin-top: 30px;
 }
 
+.tiny-spacer {
+    margin-top: 15px;
+}
+
 nav.navbar {
     margin-bottom: 2em;
 }

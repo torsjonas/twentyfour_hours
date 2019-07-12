@@ -11,11 +11,6 @@
     {% endif %}
 </h3>
 
-{% if display_score_links %}
-    <a href="{% url "latest_scores" %}">{% trans "Latest scores" %}</a>
-     | <a href="{% url "top_scores" %}">{% trans "Top scores" %}</a>
-{% endif %}
-
 {% if game_scores %}
     <div class="alert alert-warning" role="alert">
         <small>
@@ -25,6 +20,13 @@
         </small>
     </div>
 {% endif %}
+
+{% if display_score_links %}
+    <a href="{% url "latest_scores" %}">{% trans "Latest scores" %}</a>
+     | <a href="{% url "top_scores" %}">{% trans "Top scores" %}</a>
+{% endif %}
+
+<div class="tiny-spacer"></div>
 
 {% if not game_scores %}
     <div class="alert alert-warning" role="alert">
