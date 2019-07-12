@@ -268,22 +268,32 @@ class MatchManager(models.Manager):
 
         return matches
 
-    def pair_players_and_matches(self, standings):
+    def get_player_ids_from_standings(self, standings):
+        player_ids = []
+        for standing in standings:
+            player_ids.append(standing["player"].id)
+        return player_ids
+
+    def pair_players_and_matches(self, standings, odd=False):
+        # make this player 1-5 to make it debuggable
+        debug_standings = []
+        for index, standing in enumerate(standings):
+            standing["player"].id = index + 1
+
         paired_matches = []
         upper_half_standings = standings[:len(standings)//2]
         lower_half_standings = standings[len(standings)//2:]
-        first_player_ids = []
-        second_player_ids = []
-
-        for standing in upper_half_standings:
-            first_player_ids.append(standing["player"].id)
-        for standing in lower_half_standings:
-            second_player_ids.append(standing["player"].id)
+        first_player_ids = self.get_player_ids_from_standings(upper_half_standings)
+        second_player_ids = self.get_player_ids_from_standings(lower_half_standings)
 
         rounds_paired = 0
         first_player_id = first_player_ids[0]
 
-        while rounds_paired < len(standings) - 1:
+        if odd:
+            # add a dummy player if it's odd
+            first_player_ids.append("dummy")
+
+        while rounds_paired < len(first_player_ids + second_player_ids) - 1:
             for i, player_id in enumerate(first_player_ids):
                 match = dict()
                 match["player_1"] = first_player_ids[i]
@@ -309,7 +319,11 @@ class MatchManager(models.Manager):
 
     def create_and_save_matches(self, standings, tournament, division):
         matches = []
-        paired_matches = self.pair_players_and_matches(standings)
+        odd = False
+        if len(standings) % 2 != 0:
+            odd = True
+        paired_matches = self.pair_players_and_matches(standings, odd=odd)
+
         number_of_players = len(standings)
         number_of_active_games = Game.objects.filter(is_active_in_playoffs=True).count()
 
@@ -321,39 +335,41 @@ class MatchManager(models.Manager):
         for standing in standings:
             player_standings[standing["player"].id] = standing["position"]
 
-        matches_per_round = len(standings) / 2
+        matches_per_round = len(standings) - 1
         games_in_round = []
 
         for index, paired_match in enumerate(paired_matches):
+            create_match = True
+            if paired_match["player_1"] == "dummy" or paired_match["player_2"] == "dummy":
+                create_match = False
 
-            if matches_per_round > number_of_active_games:
-                # there are not enough active games to cover the rounds, just get a random game
-                game = self.get_random_playoff_game()
-                games_in_round.append(game)
-            else:
-                if len(games_in_round) == 0:
+            if create_match:
+                if matches_per_round > number_of_active_games:
+                    # there are not enough active games to cover the rounds, just get a random game
                     game = self.get_random_playoff_game()
-                    games_in_round.append(game)
                 else:
-                    game = self.get_distributed_game(games_in_round)
+                    if len(games_in_round) == 0:
+                        game = self.get_random_playoff_game()
+                    else:
+                        game = self.get_distributed_game(games_in_round)
+
                     games_in_round.append(game)
+                    player_1_position = player_standings[paired_match["player_1"]]
+                    player_2_position = player_standings[paired_match["player_2"]]
 
-            player_1_position = player_standings[paired_match["player_1"]]
-            player_2_position = player_standings[paired_match["player_2"]]
+                    if player_1_position > player_2_position:
+                        player1 = Player.objects.get(id=paired_match["player_1"])
+                        player2 = Player.objects.get(id=paired_match["player_2"])
+                    else:
+                        player1 = Player.objects.get(id=paired_match["player_2"])
+                        player2 = Player.objects.get(id=paired_match["player_1"])
 
-            if player_1_position > player_2_position:
-                player1 = Player.objects.get(id=paired_match["player_1"])
-                player2 = Player.objects.get(id=paired_match["player_2"])
-            else:
-                player1 = Player.objects.get(id=paired_match["player_2"])
-                player2 = Player.objects.get(id=paired_match["player_1"])
+                    if len(games_in_round) == matches_per_round:
+                        # empty the games in the round then
+                        games_in_round = []
 
-            if len(games_in_round) == matches_per_round:
-                # empty the games in the round then
-                games_in_round = []
-
-            match = self.create_match(player1, player2, game, tournament, division)
-            matches.append(match)
+                    match = self.create_match(player1, player2, game, tournament, division)
+                    matches.append(match)
 
         return matches
 
