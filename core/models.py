@@ -91,7 +91,7 @@ class TournamentManager(models.Manager):
         total_standings, dummy = self.get_standings_and_game_scores(get_game_scores=False)
         filtered_standings_player_ids = []
         for standing in total_standings:
-            if standing["division"] == division:
+            if ("division" in standing) and standing["division"] == division:
                 filtered_standings_player_ids.append(standing["player"].id)
 
         # filter out by division if we have a division, and set the position
