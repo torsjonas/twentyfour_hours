@@ -51,9 +51,6 @@
                     <td><i class="{{ game_score.player.country.flag_css }}"></i></td>
                 </tr>
             {% endfor %}
-            <tr>
-                <td colspan="10"><small>{{ game_score|game_stats }}</small></td>
-            </tr>
             {% if player %}
                 <tr>
                     <td colspan="10"><small><a href="/#{{ game_score.id }}">{% trans "View all game scores" %}</a></small></td>
