@@ -161,7 +161,7 @@ class ScoreAdmin(BaseAdmin):
 
 class PlayerAdmin(BaseAdmin):
     list_display = ("initials", "first_name", "last_name", "email", "ifpa_id", "country")
-    search_fields = ("initials", "first_name", "last_name", "email", "ifpa_id", "country__name")
+    search_fields = ("initials", "first_name", "last_name", "email", "ifpa_id")
     list_filter = ('country',)
 
 
