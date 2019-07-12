@@ -2,6 +2,9 @@
  TODO
 ******************************************
 
+- när man ska lägga till match så får det inte filtreras på winner:
+    http://thefezen.ddns.net/admin/core/match/add/
+
 *****************************************
  FIXAT
 ******************************************
