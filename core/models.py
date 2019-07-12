@@ -300,6 +300,11 @@ class MatchManager(models.Manager):
             # add a dummy player if it's odd
             first_player_ids.append("dummy")
 
+        # special case for only two players
+        if len(standings) == 2:
+            first_player_ids.append("dummy")
+            second_player_ids.append("dummy")
+
         while rounds_paired < len(first_player_ids + second_player_ids) - 1:
             for i, player_id in enumerate(first_player_ids):
                 match = dict()
