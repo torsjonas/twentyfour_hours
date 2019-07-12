@@ -18,13 +18,10 @@ class Command(BaseCommand):
 
 
     def handle(self, *args, **kwargs):
-
-        '''
         for match in Match.objects.all():
             match.delete()
 
         tournament = Tournament.objects.get(is_active=True)
         tournament.playoff_matches_are_created = False
         tournament.save()
-        Match.objects.create_playoff_matches()
-        '''
+        #Match.objects.create_playoff_matches()

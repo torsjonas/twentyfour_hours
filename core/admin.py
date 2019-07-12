@@ -23,6 +23,29 @@ def inactivate_games(modeladmin, request, queryset):
 
 inactivate_games.short_description = _("Inactivate selected games")
 
+def enable_games_in_playoff(modeladmin, request, queryset):
+    for game in queryset:
+        game.enabled_in_playoffs = True
+        game.save()
+
+enable_games_in_playoff.short_description = _("Enable game in playoffs")
+
+def disable_games_in_playoff(modeladmin, request, queryset):
+    for game in queryset:
+        game.enabled_in_playoffs = False
+        game.save()
+
+disable_games_in_playoff.short_description = _("Disable game in playoffs")
+
+
+def inactivate_games(modeladmin, request, queryset):
+    for game in queryset:
+        game.is_active = False
+        game.save()
+
+inactivate_games.short_description = _("Inactivate selected games")
+
+
 class BaseAdmin(admin.ModelAdmin):
 
     @property
@@ -45,11 +68,12 @@ class BaseAdmin(admin.ModelAdmin):
         #media.add_js(js)
         return media
 
+
 class GameAdmin(ModelAdmin):
-    list_display = ("name", "abbreviation", "is_active")
-    list_filter = ("is_active",)
+    list_display = ("name", "abbreviation", "is_active", "enabled_in_playoffs")
+    list_filter = ("is_active", "enabled_in_playoffs")
     search_fields = ("name", "abbreviation")
-    actions = [activate_games, inactivate_games]
+    actions = [activate_games, inactivate_games, enable_games_in_playoff, disable_games_in_playoff]
 
 
 class TournamentForm(ModelForm):

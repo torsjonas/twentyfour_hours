@@ -249,7 +249,7 @@ class MatchManager(models.Manager):
 
         matches = self.create_and_save_matches(a_division_standings, tournament, "A")
         if b_division_standings:
-            matches.append(self.create_and_save_matches(b_division_standings, tournament, "B"))
+            matches.extend(self.create_and_save_matches(b_division_standings, tournament, "B"))
 
         if matches:
             tournament.playoff_matches_are_created = True
@@ -295,13 +295,16 @@ class MatchManager(models.Manager):
             second_player_ids[-1] = last_first_players_id
 
 
-            #paired_players.append(pairs)
-
         return paired_matches
 
     def create_and_save_matches(self, standings, tournament, division):
         matches = []
         paired_matches = self.pair_players_and_matches(standings)
+        number_of_players = len(standings)
+        number_of_active_games = Game.objects.filter(is_active=True, enabled_in_playoffs=True).count()
+
+        if number_of_players > number_of_active_games:
+            raise Exception("There are not enough active games to create playoff matches")
 
         # store the player's standings to determine the playing order
         player_standings = dict()
@@ -309,18 +312,17 @@ class MatchManager(models.Manager):
             player_standings[standing["player"].id] = standing["position"]
 
         matches_per_round = len(standings) / 2
-        number_of_active_games = Game.objects.filter(is_active=True).count()
         games_in_round = []
 
         for index, paired_match in enumerate(paired_matches):
 
             if matches_per_round > number_of_active_games:
                 # there are not enough active games to cover the rounds, just get a random game
-                game = self.get_random_game()
+                game = self.get_random_playoff_game()
                 games_in_round.append(game)
             else:
                 if len(games_in_round) == 0:
-                    game = self.get_random_game()
+                    game = self.get_random_playoff_game()
                     games_in_round.append(game)
                 else:
                     game = self.get_distributed_game(games_in_round)
@@ -340,19 +342,20 @@ class MatchManager(models.Manager):
                 # empty the games in the round then
                 games_in_round = []
 
-            self.create_match(player1, player2, game, tournament, division)
+            match = self.create_match(player1, player2, game, tournament, division)
+            matches.append(match)
 
         return matches
 
     def get_distributed_game(self, games_in_round):
-        game = self.get_random_game()
+        game = self.get_random_playoff_game()
         if game in games_in_round:
             return self.get_distributed_game(games_in_round)
         else:
             return game
 
-    def get_random_game(self):
-        return Game.objects.filter(is_active=True).order_by('?').first()
+    def get_random_playoff_game(self):
+        return Game.objects.filter(is_active=True, enabled_in_playoffs=True).order_by('?').first()
 
 
     def create_match(self, player1, player2, game, tournament, division):
@@ -458,6 +461,7 @@ class Game(models.Model):
     name = models.CharField(max_length=255, unique=True)
     abbreviation = models.CharField(max_length=16, unique=True)
     is_active = models.BooleanField(default=False, null=False, blank=False)
+    enabled_in_playoffs = models.BooleanField(default=True)
 
     objects = GameManager()
 
