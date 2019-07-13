@@ -2,8 +2,10 @@
  TODO
 ******************************************
 
-- inga select2s-här iaf:
-    http://thefezen.ddns.net/admin/core/matchpoints/
+- sök efter match_points som används i templates
+    IndexView och MatchesView
+
+- verkligen ta bort MatchPoints-modellen och lägg det på Tournament
 
 *****************************************
  FIXAT

@@ -4,7 +4,7 @@ from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
 
-from core.models import Game, Score, Player, Points, Tournament, Match, MatchPoints, KeyValue
+from core.models import Game, Score, Player, Points, Tournament, Match, KeyValue
 from django.utils.translation import ugettext as _
 
 
@@ -98,6 +98,9 @@ class TournamentForm(ModelForm):
                     self.cleaned_data["number_of_players_in_b_division"]:
                 raise ValidationError(_("You must set the number of players in the divisions if playoffs are active"))
 
+            if not self.cleaned_data["match_points"]:
+                raise ValidationError(_("You must set match points if playoffs are active"))
+
             if not self.cleaned_data["number_of_rounds_against_opponents"]:
                 raise ValidationError(_("You must set the number of rounds against opponents matches if playoffs are active"))
 
@@ -188,5 +191,4 @@ admin.site.register(Score, ScoreAdmin)
 admin.site.register(Points)
 admin.site.register(Tournament, TournamentAdmin)
 admin.site.register(Match, MatchAdmin)
-admin.site.register(MatchPoints)
 admin.site.register(KeyValue)

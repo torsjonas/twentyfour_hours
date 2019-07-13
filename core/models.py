@@ -181,17 +181,15 @@ class TournamentManager(models.Manager):
                 for match in Match.objects.filter(tournament=tournament, is_tiebreaker=True):
                     standings[match.winner.id]["tiebreak_points"] += 1
 
-            match_points = get_object_or_None(MatchPoints, tournament=tournament)
-
-            if match_points:
+            if tournament.match_points:
                 # set the high score points and match points for all players
                 for player_id in standings:
                     standings[player_id]["high_score_points"] = standings[player_id]["total_points"]
                     standings[player_id]["match_points"] = 0
                     if tournament.playoffs_are_active and division:
                         for match in Match.objects.filter(tournament=tournament, winner=standings[player_id]["player"]):
-                            standings[player_id]["total_points"] += match_points.points
-                            standings[player_id]["match_points"] += match_points.points
+                            standings[player_id]["total_points"] += tournament.match_points
+                            standings[player_id]["match_points"] += tournament.match_points
 
         if get_game_scores:
             game_scores = Game.objects.get_all_scores()
@@ -567,6 +565,7 @@ class Tournament(models.Model):
     end_date = models.DateTimeField(null=False, blank=False)
     name = models.CharField(max_length=255)
     playoffs_are_active = models.BooleanField(default=False)
+    match_points = models.IntegerField(null=True, blank=True)
     number_of_players_in_a_division = models.IntegerField(null=True, blank=True)
     number_of_players_in_b_division = models.IntegerField(null=True, blank=True)
     number_of_rounds_against_opponents = models.IntegerField(null=True, blank=True)
@@ -626,17 +625,6 @@ class Match(BaseModel):
         if self.winner:
             str += " | " + self.winner.initials
         return str
-
-
-class MatchPoints(models.Model):
-    points = models.IntegerField(null=False, blank=False)
-    tournament = models.ForeignKey(Tournament, null=False, blank=False, on_delete=models.PROTECT)
-
-    class Meta:
-        verbose_name_plural = _("Match points")
-
-    def __str__(self):
-        return str(self.points)
 
 
 class KeyValue(models.Model):
