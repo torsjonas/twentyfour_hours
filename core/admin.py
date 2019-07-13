@@ -179,6 +179,13 @@ class MatchForm(ModelForm):
         if tournament:
             self.fields["tournament"].initial = tournament
 
+    def clean(self):
+        if not self.cleaned_data["division"]:
+            raise ValidationError(_("You must select the division"))
+
+        if self.cleaned_data["division"] != "A" and self.cleaned_data["division"] != "B":
+            raise ValidationError(_("The division must be A or B"))
+
     def clean_winner(self):
         if self.cleaned_data["winner"]:
             if self.cleaned_data["player1"] and self.cleaned_data["player2"]:
