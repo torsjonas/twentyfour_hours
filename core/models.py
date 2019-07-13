@@ -567,9 +567,9 @@ class Tournament(models.Model):
     end_date = models.DateTimeField(null=False, blank=False)
     name = models.CharField(max_length=255)
     playoffs_are_active = models.BooleanField(default=False)
-    number_of_rounds_against_opponents = models.IntegerField(null=True, blank=True)
     number_of_players_in_a_division = models.IntegerField(null=True, blank=True)
     number_of_players_in_b_division = models.IntegerField(null=True, blank=True)
+    number_of_rounds_against_opponents = models.IntegerField(null=True, blank=True)
     disable_score_registering = models.BooleanField(default=False)
     playoff_matches_are_created = models.BooleanField(default=False,
           help_text=_("Don't touch this unless you really know what you are doing"))
