@@ -3,6 +3,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ValidationError
 from django.forms import ModelForm
+from django.contrib import messages
 
 from core.models import Game, Score, Player, Points, Tournament, Match, KeyValue
 from django.utils.translation import ugettext as _
@@ -45,6 +46,21 @@ def inactivate_games(modeladmin, request, queryset):
 
 inactivate_games.short_description = _("Inactivate selected games")
 
+def set_active_tournament(modeladmin, request, queryset):
+    if queryset.count() > 1:
+        messages.add_message(request, messages.ERROR, _("Please select one tournament only"))
+
+    if queryset.count() == 1:
+        tournament = queryset[0]
+        tournament.is_active = True
+        tournament.save()
+
+        for t in Tournament.objects.all():
+            if t != tournament:
+                t.is_active = False
+                t.save()
+
+set_active_tournament.short_description = _("Set the selected tournament as active")
 
 class BaseAdmin(admin.ModelAdmin):
 
@@ -140,6 +156,7 @@ class TournamentAdmin(BaseAdmin):
                     "number_of_players_in_a_division", "number_of_players_in_b_division",  "disable_score_registering",
                     "playoff_matches_are_created")
     list_filter = ("is_active", "playoffs_are_active", "start_date",)
+    actions = [set_active_tournament]
 
 class ScoreAdmin(BaseAdmin):
     list_display = ("game", "score", "player", "tournament", "date_created")

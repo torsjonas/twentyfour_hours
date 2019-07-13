@@ -2,14 +2,18 @@
  TODO
 ******************************************
 
-- sök efter match_points som används i templates
-    IndexView och MatchesView
+- action på att kunna klicka i ett Tournament och sätta det som det aktiva
 
-- verkligen ta bort MatchPoints-modellen och lägg det på Tournament
+- testa en turnering med A och B-division
 
 *****************************************
  FIXAT
 ******************************************
+
+- sök efter match_points som används i templates
+    IndexView och MatchesView
+
+- verkligen ta bort MatchPoints-modellen och lägg det på Tournament
 
 - qualifications ska inte vara startsida om det pågår slutspel
 
