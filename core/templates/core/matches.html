@@ -9,7 +9,7 @@
 
 {% if matches %}
     <div class="alert alert-primary" role="alert">
-        {% trans "Each playoff win awards" %} <strong>{{ TOURNAMENT.match_points }}</strong> {% trans "points towards the total standings" %}
+        {% trans "Each playoff win awards" %} <strong>{{ TOURNAMENT.points }}</strong> {% trans "points towards the total standings" %}
     </div>
 
     <table class="table">
@@ -18,7 +18,9 @@
             <th scope="col">{% trans "Player 1" %}</th>
             <th scope="col"></th>
             <th scope="col">{% trans "Player 2" %}</th>
-            <th scope="col">{% trans "Division" %}</th>
+            {% if TOURNAMENT.is_mutiple_division  %}
+                <th scope="col">{% trans "Division" %}</th>
+            {% endif %}
             <th scope="col">{% trans "Game" %}</th>
             <th scope="col">{% trans "Winner" %}</th>
             {% if request.user.is_staff %}
@@ -30,9 +32,11 @@
 
     {% for match in matches %}
         {% ifchanged match.division %}
-            <tr class="distinct">
-                <td colspan="10"><h5>{{ match.division }} {% trans "Division" %}</h5>
-            </tr>
+            {% if TOURNAMENT.is_mutiple_division  %}
+                <tr class="distinct">
+                    <td colspan="10"><h5>{{ match.division }} {% trans "Division" %}</h5>
+                </tr>
+            {% endif %}
             <tr>
                 <td colspan="10">
                     <small>
@@ -56,7 +60,9 @@
             <td><a href="{{ match.player1.get_url }}">{{ match.player1.get_initials_and_name }}</a></td>
             <td><small>{% trans "vs." %}</small></td>
             <td><a href="{{ match.player2.get_url }}">{{ match.player2.get_initials_and_name }}</a></td>
-            <td>{{ match.division }}</td>
+            {% if TOURNAMENT.is_mutiple_division  %}
+                <td>{{ match.division }}</td>
+            {% endif %}
             <td>{{ match.game }}</td>
             <td>
                 {% if not match.winner %}

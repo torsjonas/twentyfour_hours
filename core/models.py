@@ -593,6 +593,11 @@ class Tournament(models.Model):
             return True
         return False
 
+    def is_mutiple_division(self):
+        if self.number_of_players_in_a_division and self.number_of_players_in_b_division:
+            return True
+        return False
+
     def has_playoff_matches(self):
         if Match.objects.filter(tournament=self).count() > 0:
             return True

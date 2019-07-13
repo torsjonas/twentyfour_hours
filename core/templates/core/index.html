@@ -27,7 +27,7 @@
         </h1>
 
         {% if TOURNAMENT.has_playoff_matches %}
-            <a href="{% url "matches" %}">{% trans "View playoff matches" %}</a>
+        <a href="{% url "matches" %}">{% trans "View playoff matches" %}</a>
         {% endif %}
 
         {% if not TOURNAMENT.match_points and request.user.is_staff %}
@@ -116,17 +116,23 @@
         {% for standing in standings %}
             {% ifchanged standing.division %}
                 {% if TOURNAMENT.playoffs_are_active %}
-                    <tr class="distinct">
-                        <td colspan="10">
                         {% if standing.division %}
-                            <h5>{{ standing.division }} {% trans "Division" %}</h5>
+                            {% if TOURNAMENT.is_multiple_division %}
+                                <tr class="distinct">
+                                    <td colspan="10">
+                                        <h5>{{ standing.division }} {% trans "Division" %}</h5>
+                                    </td>
+                                </tr>
+                            {% endif %}
                         {% else %}
                             {% if TOURNAMENT.playoffs_are_active %}
-                                <h5>{% trans "Missing playoffs" %}</h5>
+                                <tr class="distinct">
+                                    <td colspan="10">
+                                        <h5>{% trans "Missing playoffs" %}</h5>
+                                    </td>
+                                </tr>
                             {% endif %}
                         {% endif %}
-                        </td>
-                    </tr>
                 {% endif %}
             {% endifchanged %}
             <tr class="{% cycle 'row1' 'row2' %}">
