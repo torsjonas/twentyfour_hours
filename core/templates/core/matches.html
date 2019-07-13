@@ -8,9 +8,11 @@
 {% endif %}
 
 {% if matches %}
-    <div class="alert alert-primary" role="alert">
-        {% trans "Each playoff win awards" %} <strong>{{ TOURNAMENT.points }}</strong> {% trans "points towards the total standings" %}
-    </div>
+    {% if TOURNAMENT.match_points %}
+        <div class="alert alert-primary" role="alert">
+            {% trans "Each playoff win awards" %} <strong>{{ TOURNAMENT.match_points }}</strong> {% trans "points towards the total standings." %}
+        </div>
+    {% endif %}
 
     <table class="table">
     <thead class="thead-dark">
