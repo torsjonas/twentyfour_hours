@@ -8,7 +8,11 @@
         <h1>
             {% if request.GET.division == "A" %}
                 {% if active_tournament.a_division_is_finalized %}
-                    {% trans "Final results of A division" %}
+                    {% if TOURNAMENT.is_a_division_only %}
+                        {% trans "Final results of" %} {{ TOURNAMENT.name }}
+                    {% else %}
+                        {% trans "Final results of A division" %}
+                    {% endif %}
                 {% else %}
                     {% trans "Standings in A division" %}
                 {% endif %} 

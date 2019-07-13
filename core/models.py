@@ -589,6 +589,11 @@ class Tournament(models.Model):
 
         return True
 
+    def is_a_division_only(self):
+        if self.number_of_players_in_a_division and not self.number_of_players_in_b_division:
+            return True
+        return False
+
     objects = TournamentManager()
 
     def __str__(self):

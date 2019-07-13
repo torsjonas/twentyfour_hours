@@ -50,14 +50,20 @@
         <div class="container center-navbar-container">
             <ul class="navbar-nav mr-auto">
                 {% if TOURNAMENT.playoffs_are_active %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/?division=A">{% trans "A division" %}</a>
-                    </li>
-                {% endif %}
-                {% if TOURNAMENT.number_of_players_in_b_division %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="/?division=B">{% trans "B division" %}</a>
-                    </li>
+                    {% if TOURNAMENT.is_a_division_only %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/?division=A">{% trans "Results" %}</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/?division=A">{% trans "A division" %}</a>
+                        </li>
+                        {% if TOURNAMENT.number_of_players_in_b_division %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="/?division=B">{% trans "B division" %}</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
                 {% endif %}
                 {% if TOURNAMENT.playoffs_are_active %}
                     <li class="nav-item">
