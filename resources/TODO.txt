@@ -2,11 +2,16 @@
  TODO
 ******************************************
 
-- när man lägger till match i admin ska det vara validering på A eller B-division
+- Visa lite info vid det här om antal spelare osv.:
+ [Create playoff matches for the active tournament]
+
+- fixa list index out of range som kan uppstå när man skapar playoff-matcher. Osäker på när det uppstår.
 
 *****************************************
  FIXAT
 ******************************************
+
+- när man lägger till match i admin ska det vara validering på A eller B-division
 
 - testa en turnering med A och B-division
 
