@@ -545,9 +545,6 @@ class Score(BaseModel):
 
     objects = ScoreManager()
 
-    class Meta:
-        ordering = ["-score"]
-
     def __str__(self):
         return str(self.game) + " - " + str(self.score) + " - " + str(self.player)
 
