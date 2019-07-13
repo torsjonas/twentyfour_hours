@@ -17,6 +17,15 @@ from core.models import Player, Score, Game, Tournament, Points, Match, KeyValue
 class IndexView(TemplateView):
     template_name = "core/index.html"
 
+    def get(self, request, *args, **kwargs):
+        tournament = get_object_or_None(Tournament, is_active=True)
+        division = request.GET.get("division")
+        if tournament and tournament.playoffs_are_active:
+            if not division:
+                return HttpResponseRedirect('/?division=A')
+
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
         division = self.request.GET.get("division")

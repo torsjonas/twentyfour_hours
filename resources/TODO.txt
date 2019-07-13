@@ -2,16 +2,16 @@
  TODO
 ******************************************
 
-- qualifications ska inte vara startsida om det pågår slutspel
-
-- försöka få till så att det inte står "A Division" hit och dit om det bara är en  division
-
 - inga select2s-här iaf:
     http://thefezen.ddns.net/admin/core/matchpoints/
 
 *****************************************
  FIXAT
 ******************************************
+
+- qualifications ska inte vara startsida om det pågår slutspel
+
+- försöka få till så att det inte står "A Division" hit och dit om det bara är en  division
 
 - när man genererar matcher i admin skriver den ut fel antal
 
