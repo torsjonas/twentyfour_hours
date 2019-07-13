@@ -2,8 +2,6 @@
  TODO
 ******************************************
 
-- öppna Edit score i ny tab
-
 - varningstexter på Tournament-properties man inte ska röra i admin
 
 - när man genererar matcher i admin skriver den ut fel antal
@@ -21,6 +19,8 @@
 *****************************************
  FIXAT
 ******************************************
+
+- öppna Edit score i ny tab
 
 - Ingen parentes på:
     (Number of players in the playoff: 2 )

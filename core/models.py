@@ -570,8 +570,9 @@ class Tournament(models.Model):
     number_of_rounds_against_opponents = models.IntegerField(null=True, blank=True)
     number_of_players_in_a_division = models.IntegerField(null=True, blank=True)
     number_of_players_in_b_division = models.IntegerField(null=True, blank=True)
-    playoff_matches_are_created = models.BooleanField(default=False)
     disable_score_registering = models.BooleanField(default=False)
+    playoff_matches_are_created = models.BooleanField(default=False,
+          help_text=_("Don't touch this unless you really know what you are doing"))
 
     def a_division_is_finalized(self):
         for match in Match.objects.filter(tournament=self, division="A"):
