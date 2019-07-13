@@ -181,7 +181,7 @@ class TournamentManager(models.Manager):
                 for match in Match.objects.filter(tournament=tournament, is_tiebreaker=True):
                     standings[match.winner.id]["tiebreak_points"] += 1
 
-            if tournament.match_points:
+            if tournament and tournament.match_points:
                 # set the high score points and match points for all players
                 for player_id in standings:
                     standings[player_id]["high_score_points"] = standings[player_id]["total_points"]
