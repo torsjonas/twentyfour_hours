@@ -2,9 +2,9 @@
 {% load i18n tags %}
 {% block content %}
 <h1>{% trans "Registered Score" %}</h1>
-    <p>
-        {% trans "Thanks. Your score has been registered." %}
-    </p>
+    {% trans "Thanks. Your score has been registered." %}
+    <br />
+    <a href="{% url "register_score" %}">{% trans "Register a new score" %}</a>
     <hr />
     <h3>{% trans "Player" %}</h3>
     <a href="{{ score.player.get_url }}">{{ score.player.get_initials_and_name }}</a>
