@@ -1,7 +1,7 @@
 {% extends "core/base.html" %}
 {% load i18n %}
 {% block content %}
-<h1>{% trans "Playoff matches" %}</h1>
+<h1>{% trans "Playoff matches in" %} {{ TOURNAMENT.name }}</h1>
 
 {% if not matches %}
     {% trans "There are no playoff matches, yet." %}
