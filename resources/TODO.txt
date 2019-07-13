@@ -2,13 +2,15 @@
  TODO
 ******************************************
 
-- action på att kunna klicka i ett Tournament och sätta det som det aktiva
-
-- testa en turnering med A och B-division
+- när man lägger till match i admin ska det vara validering på A eller B-division
 
 *****************************************
  FIXAT
 ******************************************
+
+- testa en turnering med A och B-division
+
+- action på att kunna klicka i ett Tournament och sätta det som det aktiva
 
 - sök efter match_points som används i templates
     IndexView och MatchesView

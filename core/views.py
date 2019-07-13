@@ -21,7 +21,7 @@ class IndexView(TemplateView):
         tournament = get_object_or_None(Tournament, is_active=True)
         division = request.GET.get("division")
         if tournament and tournament.playoffs_are_active:
-            if not division:
+            if not division and not request.GET.get("q"):
                 return HttpResponseRedirect('/?division=A')
 
         return super().get(request, *args, **kwargs)
