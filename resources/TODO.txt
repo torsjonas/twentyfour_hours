@@ -2,9 +2,6 @@
  TODO
 ******************************************
 
-- Ingen parentes på:
-    (Number of players in the playoff: 2 )
-
 - öppna Edit score i ny tab
 
 - varningstexter på Tournament-properties man inte ska röra i admin
@@ -24,6 +21,9 @@
 *****************************************
  FIXAT
 ******************************************
+
+- Ingen parentes på:
+    (Number of players in the playoff: 2 )
 
 - save selected player ska vara ibockad om man har en vald spelare
 
