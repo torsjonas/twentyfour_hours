@@ -88,7 +88,8 @@ class TournamentForm(ModelForm):
         return self.cleaned_data["is_active"]
 
     def clean(self):
-        if self.cleaned_data["start_date"] and self.cleaned_data["end_date"]:
+
+        if "start_date" in self.cleaned_data and "end_date" in self.cleaned_data:
             if self.cleaned_data["end_date"] < self.cleaned_data["start_date"]:
                 raise ValidationError(_("The start date cannot be before the end date"))
 
