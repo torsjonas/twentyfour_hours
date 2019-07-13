@@ -2,8 +2,6 @@
  TODO
 ******************************************
 
-- save selected player ska vara ibockad om man har en vald spelare
-
 - Ingen parentes på:
     (Number of players in the playoff: 2 )
 
@@ -26,6 +24,8 @@
 *****************************************
  FIXAT
 ******************************************
+
+- save selected player ska vara ibockad om man har en vald spelare
 
 - länka register score på veriferingssidan för reg-score
 

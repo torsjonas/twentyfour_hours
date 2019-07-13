@@ -36,14 +36,13 @@
             <tr>
                 <td colspan="10">
                     <small>
-                        ({% trans "Number of players in the playoff" %}:
+                        {% trans "Number of players in the playoff" %}:
                         {% if match.division == "A" %}
                             {{ TOURNAMENT.number_of_players_in_a_division }}
                         {% endif %}
                         {% if match.division == "B" %}
                             {{ TOURNAMENT.number_of_players_in_b_division }}
                         {% endif %}
-                        )
                     </small>
                 </td>
             </tr>
