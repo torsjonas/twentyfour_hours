@@ -2,15 +2,38 @@
  TODO
 ******************************************
 
+- länka register score på veriferingssidan för reg-score
+
+- save selected player ska vara ibockad om man har en vald spelare
+
+- varningstexter på Tournament-properties man inte ska röra i admin
+
+- Ingen parentes på:
+    (Number of players in the playoff: 2 )
+
+- när man genererar matcher i admin skriver den ut fel antal
+
+- öppna Edit score i ny tab
+
+- ta bort MatchPoints-modellen och lägg det på Tournament
+
+- skriv också vid knappen hur många spelare det är valt i slutspelet
+
+- Add Tournament kraschar om man skriver in t.ex. 21.40 på tid
+
+- qualifications ska inte vara startsida om det pågår slutspel
+
+- försöka få till så att det inte står "A Division" hit och dit om det bara är en  division
+
+*****************************************
+ FIXAT
+******************************************
+
 - en help_text på winner i admin
 
 - testa att generera matcher med tre slutspelsspelare
 
 - testa med slutspelsmatcher för A och B-division
-
-*****************************************
- FIXAT
-******************************************
 
 - kolla texten på varningen för poäng som inte slutar på 0
 
