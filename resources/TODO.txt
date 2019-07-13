@@ -2,18 +2,16 @@
  TODO
 ******************************************
 
-- länka register score på veriferingssidan för reg-score
-
 - save selected player ska vara ibockad om man har en vald spelare
-
-- varningstexter på Tournament-properties man inte ska röra i admin
 
 - Ingen parentes på:
     (Number of players in the playoff: 2 )
 
-- när man genererar matcher i admin skriver den ut fel antal
-
 - öppna Edit score i ny tab
+
+- varningstexter på Tournament-properties man inte ska röra i admin
+
+- när man genererar matcher i admin skriver den ut fel antal
 
 - ta bort MatchPoints-modellen och lägg det på Tournament
 
@@ -28,6 +26,8 @@
 *****************************************
  FIXAT
 ******************************************
+
+- länka register score på veriferingssidan för reg-score
 
 - en help_text på winner i admin
 

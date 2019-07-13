@@ -144,7 +144,8 @@ class ScoreCreateView(CreateView):
             player = get_object_or_None(Player, id=preselected_player_id)
             if player:
                 form.fields["player"].initial = player
-
+                # check the checkbox (!)
+                form.fields["save_player"].initial = True
 
         return form
 
