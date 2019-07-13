@@ -2,15 +2,11 @@
  TODO
 ******************************************
 
-- varningstexter på Tournament-properties man inte ska röra i admin
-
 - när man genererar matcher i admin skriver den ut fel antal
-
-- ta bort MatchPoints-modellen och lägg det på Tournament
 
 - skriv också vid knappen hur många spelare det är valt i slutspelet
 
-- Add Tournament kraschar om man skriver in t.ex. 21.40 på tid
+- ta bort MatchPoints-modellen och lägg det på Tournament
 
 - qualifications ska inte vara startsida om det pågår slutspel
 
@@ -19,6 +15,10 @@
 *****************************************
  FIXAT
 ******************************************
+
+- Add Tournament kraschar om man skriver in t.ex. 21.40 på tid
+
+- varningstexter på Tournament-properties man inte ska röra i admin
 
 - öppna Edit score i ny tab
 

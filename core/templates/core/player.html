@@ -6,9 +6,9 @@
     {% if position %}
         <h3>
             {% if not TOURNAMENT.playoffs_are_active %}
-                {% trans "Current position" %}:
+                {% trans "Position" %}:
             {% else %}
-                {% trans "Current qualifying position" %}:
+                {% trans "Qualifying position" %}:
             {% endif %}
             <a href="/">{{ position }}</a>
         </h3>
