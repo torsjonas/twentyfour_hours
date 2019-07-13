@@ -13,11 +13,9 @@
 
 {% if game_scores %}
     <div class="alert alert-warning" role="alert">
-        <small>
         {% for game_score in game_scores %}
             <a href="#{{ game_score.id }}">{{ game_score.name }}</a>{% if not forloop.last %},{% endif %}
         {% endfor %}
-        </small>
     </div>
 {% endif %}
 
