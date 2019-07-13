@@ -55,7 +55,7 @@
         {% endifchanged %}
         {% ifchanged match.round and rounds_are_different %}
             <tr>
-                <td colspan="10"><small><strong>{% trans "Round" %} {{ match.round }}</strong></small></td>
+                <td colspan="10"><strong>{% trans "Round" %} {{ match.round }}</strong></td>
             </tr>
         {% endifchanged %}
         <tr class="{% cycle 'row1' 'row2' %}">
