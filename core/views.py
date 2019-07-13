@@ -125,6 +125,9 @@ class ScoreCreateView(CreateView):
         if form.cleaned_data["save_player"]:
             response.set_cookie("preselected_player_id", form.cleaned_data["player"].id,
                                 expires=datetime.strptime('2090-02-10' , '%Y-%m-%d'))
+        else:
+            # well, delete the cookie then
+            response.delete_cookie("preselected_player_id")
 
         return response
 
@@ -156,7 +159,6 @@ class ScoreCreateView(CreateView):
             if not self.request.user.is_staff:
                 raise PermissionDenied()
         context["active_tournament"] = tournament
-        context["preselected_player_id"] = self.request.COOKIES.get('preselected_player_id')
         return context
 
 
@@ -178,7 +180,6 @@ class ScoreCreatedView(TemplateView):
                         context["position"] = s.position
 
         context["score_ends_with_zero"] = (score.score % 10 == 0)
-
         return context
 
 
@@ -280,9 +281,3 @@ class TopScoresView(TemplateView):
         context["top_scores"] = Score.objects.get_top_scores()
         context["points"] = Points.objects.all()
         return context
-
-
-def clear_preselected_player(request):
-    response = HttpResponseRedirect(reverse("register_score"))
-    response.delete_cookie("preselected_player_id")
-    return response

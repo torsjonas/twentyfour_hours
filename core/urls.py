@@ -14,7 +14,6 @@ urlpatterns = [
     url(r'^matches/$', MatchesView.as_view(), name='matches'),
     url(r'player/(?P<pk>\d+)/$', PlayerDetailView.as_view(), name = 'player_detail'),
     url(r'^playoff-matches/create/$', views.create_playoff_matches, name='create_playoff_matches'),
-    url(r'^score/register/clear-preselected-player/$', views.clear_preselected_player, name='clear_preselected_player'),
     url(r'^scores/latest/$', LatestScoresView.as_view(), name='latest_scores'),
     url(r'^scores/top/$', TopScoresView.as_view(), name='top_scores'),
 ]
