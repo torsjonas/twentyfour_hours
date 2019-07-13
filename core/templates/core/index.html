@@ -21,6 +21,12 @@
                 {% endif %} 
             {% endif %}
         </h1>
+
+        {% if not match_points and request.user.is_staff %}
+            <div class="alert alert-primary" role="alert">
+                {% trans "There are no match points for the active tournament. Please add match points to calculate standings." %}
+            </div>
+        {% endif %}
         {% if not standings %}
             {% trans "There are no final results, yet." %}
         {% endif %}

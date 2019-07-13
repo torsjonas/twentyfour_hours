@@ -2,19 +2,18 @@
  TODO
 ******************************************
 
-- när man genererar matcher i admin skriver den ut fel antal
-
-- skriv också vid knappen hur många spelare det är valt i slutspelet
-
-- ta bort MatchPoints-modellen och lägg det på Tournament
-
 - qualifications ska inte vara startsida om det pågår slutspel
 
 - försöka få till så att det inte står "A Division" hit och dit om det bara är en  division
 
+- inga select2s-här iaf:
+    http://thefezen.ddns.net/admin/core/matchpoints/
+
 *****************************************
  FIXAT
 ******************************************
+
+- när man genererar matcher i admin skriver den ut fel antal
 
 - Add Tournament kraschar om man skriver in t.ex. 21.40 på tid
 

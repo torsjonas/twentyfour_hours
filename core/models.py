@@ -181,7 +181,7 @@ class TournamentManager(models.Manager):
                 for match in Match.objects.filter(tournament=tournament, is_tiebreaker=True):
                     standings[match.winner.id]["tiebreak_points"] += 1
 
-            match_points = get_object_or_None(MatchPoints, id=1)
+            match_points = get_object_or_None(MatchPoints, tournament=tournament)
 
             if match_points:
                 # set the high score points and match points for all players
@@ -625,6 +625,7 @@ class Match(BaseModel):
 
 class MatchPoints(models.Model):
     points = models.IntegerField(null=False, blank=False)
+    tournament = models.ForeignKey(Tournament, null=False, blank=False, on_delete=models.PROTECT)
 
     class Meta:
         verbose_name_plural = _("Match points")

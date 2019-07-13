@@ -30,7 +30,7 @@ class IndexView(TemplateView):
         context["divisions_active"] = False
         context["qualification_rules"] = KeyValue.objects.get_qualification_rules()
         context["display_score_links"] = True
-
+        context["match_points"] = get_object_or_None(MatchPoints, tournament=active_tournament)
         if active_tournament and (active_tournament.number_of_players_in_a_division
                                   or active_tournament.number_of_players_in_b_division):
             context["divisions_active"] = True
@@ -190,7 +190,9 @@ class MatchesView(TemplateView):
         context = super().get_context_data(*args, **kwargs)
         matches = Match.objects.get_active_matches()
         context["matches"] = matches
-        context["match_points"] = get_object_or_None(MatchPoints, id=1)
+        tournament = get_object_or_None(Tournament, is_active=True)
+        if tournament:
+            context["match_points"] = get_object_or_None(MatchPoints, id=1, tournament=tournament)
         # to fix a bug that occurs if the number of players to playoffs in the division
         # is higher than the actual number of players that qualified the "rounds"-bit will
         # be messed up
