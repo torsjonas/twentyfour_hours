@@ -593,6 +593,11 @@ class Tournament(models.Model):
             return True
         return False
 
+    def has_playoff_matches(self):
+        if Match.objects.filter(tournament=self).count() > 0:
+            return True
+        return False
+
     objects = TournamentManager()
 
     def __str__(self):

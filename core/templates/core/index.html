@@ -26,6 +26,10 @@
             {% endif %}
         </h1>
 
+        {% if TOURNAMENT.has_playoff_matches %}
+            <a href="{% url "matches" %}">{% trans "View playoff matches" %}</a>
+        {% endif %}
+
         {% if not TOURNAMENT.match_points and request.user.is_staff %}
             <div class="alert alert-primary" role="alert">
                 {% trans "There are no match points for the active tournament. Please add match points to calculate standings." %}
