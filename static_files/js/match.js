@@ -17,6 +17,8 @@ $(document).ready(function() {
             }
         });
 
+        // hide a lot of fields if winner is set
+
         console.log($("#id_player1").select2('destroy'));
         console.log($("#id_player2").select2('destroy'));
         $("#id_player1").prop('disabled', 'disabled');
