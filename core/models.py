@@ -358,10 +358,11 @@ class MatchManager(models.Manager):
                 else:
                     if len(games_in_round) == 0:
                         game = self.get_random_playoff_game()
+                        games_in_round.append(game)
                     else:
                         game = self.get_distributed_game(games_in_round)
+                        games_in_round.append(game)
 
-                    games_in_round.append(game)
                     player_1_position = player_standings[paired_match["player_1"]]
                     player_2_position = player_standings[paired_match["player_2"]]
 

@@ -2,9 +2,9 @@
  TODO
 ******************************************
 
-- kolla vad jag ändrade i index.html för att fixa så division syns
-
 - I500 kom två gånger i samma runda vid genereringen
+
+- länka "Edit Match" och "Set Winner", lås fält som man kommer med "Set Winner"
 
 - Visa lite info vid det här om antal spelare osv.:
  [Create playoff matches for the active tournament]
@@ -14,6 +14,8 @@
 *****************************************
  FIXAT
 ******************************************
+
+- kolla vad jag ändrade i index.html för att fixa så division syns
 
 - view standings efter scoreregistreringen länkar till final results in A (redirect)
 
