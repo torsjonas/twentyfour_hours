@@ -596,7 +596,9 @@ class Tournament(models.Model):
             return True
         return False
 
-    def is_mutiple_division(self):
+    def is_multiple_division(self):
+        print(self.number_of_players_in_a_division)
+        print(self.number_of_players_in_b_division)
         if self.number_of_players_in_a_division and self.number_of_players_in_b_division:
             return True
         return False

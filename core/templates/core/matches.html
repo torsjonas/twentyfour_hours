@@ -20,7 +20,7 @@
             <th scope="col">{% trans "Player 1" %}</th>
             <th scope="col"></th>
             <th scope="col">{% trans "Player 2" %}</th>
-            {% if TOURNAMENT.is_mutiple_division  %}
+            {% if TOURNAMENT.is_multiple_division  %}
                 <th scope="col">{% trans "Division" %}</th>
             {% endif %}
             <th scope="col">{% trans "Game" %}</th>
@@ -34,7 +34,7 @@
 
     {% for match in matches %}
         {% ifchanged match.division %}
-            {% if TOURNAMENT.is_mutiple_division  %}
+            {% if TOURNAMENT.is_multiple_division  %}
                 <tr class="distinct">
                     <td colspan="10"><h5>{{ match.division }} {% trans "Division" %}</h5>
                 </tr>
@@ -62,7 +62,7 @@
             <td><a href="{{ match.player1.get_url }}">{{ match.player1.get_initials_and_name }}</a></td>
             <td><small>{% trans "vs." %}</small></td>
             <td><a href="{{ match.player2.get_url }}">{{ match.player2.get_initials_and_name }}</a></td>
-            {% if TOURNAMENT.is_mutiple_division  %}
+            {% if TOURNAMENT.is_multiple_division  %}
                 <td>{{ match.division }}</td>
             {% endif %}
             <td>{{ match.game }}</td>
