@@ -2,11 +2,11 @@
  TODO
 ******************************************
 
-- fixa list index out of range som kan uppstå när man skapar playoff-matcher. Osäker på när det uppstår.
-
 *****************************************
  BUGGAR
 ******************************************
+
+- fixa list index out of range som kan uppstå när man skapar playoff-matcher. Osäker på när det uppstår.
 
 - I500 kom två gånger i samma runda vid genereringen
     ... mycket oklart varför
