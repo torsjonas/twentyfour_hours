@@ -2,6 +2,8 @@
  TODO
 ******************************************
 
+- kunna cancla spel så poängen inte räknas och det listas som cancelled
+
 *****************************************
  BUGGAR
 ******************************************
