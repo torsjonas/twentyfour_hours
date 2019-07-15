@@ -158,6 +158,11 @@ class TournamentAdmin(BaseAdmin):
     list_filter = ("is_active", "playoffs_are_active", "start_date",)
     actions = [set_active_tournament]
 
+    def changelist_view(self, request, extra_context=None):
+        extra_context = extra_context or {}
+        extra_context["active_playoff_games"] = Game.objects.filter(is_active_in_playoffs=True).order_by("name")
+        return super().changelist_view(request, extra_context=extra_context)
+
 
 class ScoreAdmin(BaseAdmin):
     list_display = ("game", "score", "player", "tournament", "date_created")

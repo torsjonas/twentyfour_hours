@@ -6,6 +6,28 @@
     {% if title %}<h1>{{ title }}</h1>{% endif %}
     {% if TOURNAMENT.playoffs_are_active and not TOURNAMENT.playoff_matches_are_created %}
         <a href="{% url "create_playoff_matches" %}"><input type="submit" value="{% trans "Create playoff matches for the active tournament" %}" /></a>
+        <br />
+        <small>
+            <strong>{% trans "Tournament settings:" %}</strong>
+            <br />
+            {% trans "Name:" %} {{ TOURNAMENT.name }}
+            <br />
+            {% trans "Number of players in A division:" %} {{ TOURNAMENT.number_of_players_in_a_division }}
+            <br />
+            {% trans "Number of players in B division:" %} {{ TOURNAMENT.number_of_players_in_b_division }}
+            <br />
+            {% trans "Number of rounds against opponents:" %} {{ TOURNAMENT.number_of_rounds_against_opponents }}
+            <br />
+            <strong>{% trans "Active playoff games" %}</strong>
+            <br />
+            {% if active_playoff_games %}
+                {% for game in active_playoff_games %}
+                    {{ game.name }}{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            {% else %}
+                {% trans "There are no active playoff games" %}
+            {% endif %}
+        </small>
     {% endif %}
 {% endblock %}
 

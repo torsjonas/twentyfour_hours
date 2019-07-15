@@ -2,9 +2,6 @@
  TODO
 ******************************************
 
-- Visa lite info vid det här om antal spelare osv.:
- [Create playoff matches for the active tournament]
-
 - fixa list index out of range som kan uppstå när man skapar playoff-matcher. Osäker på när det uppstår.
 
 *****************************************
@@ -17,6 +14,9 @@
 *****************************************
  FIXAT
 ******************************************
+
+- Visa lite info vid det här om antal spelare osv.:
+ [Create playoff matches for the active tournament]
 
 - länka "Edit Match" och "Set Winner", lås fält som man kommer med "Set Winner"
 
