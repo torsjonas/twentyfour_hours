@@ -499,6 +499,9 @@ class Game(models.Model):
 
     objects = GameManager()
 
+    def get_qualification_url(self):
+        return "/?q=true#" + str(self.id)
+
     class Meta:
         ordering = ["name"]
 

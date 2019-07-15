@@ -2,7 +2,7 @@
 {% load i18n tags %}
 {% block content %}
 <h1>{% trans "Registered Score" %}</h1>
-    <a href="{% url "register_score" %}">{% trans "Register a new score" %}</a> | <a href="{% url "index" %}">{% trans "View standings" %}</a>
+    <a href="{% url "register_score" %}">{% trans "Register a new score" %}</a> | <a href="{% url "index" %}?q=true">{% trans "View standings" %}</a>
     <hr />
     <h3>{% trans "Player" %}</h3>
     <a href="{{ score.player.get_url }}">{{ score.player.get_initials_and_name }}</a>

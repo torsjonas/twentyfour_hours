@@ -20,7 +20,7 @@
     <tbody>
     {% for game in top_scores %}
         <tr class="{% cycle 'row1' 'row2' %}">
-            <td><a href="/#{{ game.id }}">{{ game.name }}</a></td>
+            <td><a href="{{ game.get_qualification_url }}">{{ game.name }}</a></td>
             {% for score in game.top_scores %}
                 <td>
                     {% if score.score %}

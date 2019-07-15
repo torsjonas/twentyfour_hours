@@ -2,6 +2,10 @@
  TODO
 ******************************************
 
+- kolla vad jag ändrade i index.html för att fixa så division syns
+
+- I500 kom två gånger i samma runda vid genereringen
+
 - Visa lite info vid det här om antal spelare osv.:
  [Create playoff matches for the active tournament]
 
@@ -10,6 +14,11 @@
 *****************************************
  FIXAT
 ******************************************
+
+- view standings efter scoreregistreringen länkar till final results in A (redirect)
+
+- spelen länkar fel här: http://thefezen.ddns.net/scores/top/
+    ... gäller bara då det är en redirect på index. Länka med ?q=true
 
 - när man lägger till match i admin ska det vara validering på A eller B-division
 
