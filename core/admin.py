@@ -158,11 +158,13 @@ class TournamentAdmin(BaseAdmin):
     list_filter = ("is_active", "playoffs_are_active", "start_date",)
     actions = [set_active_tournament]
 
+
 class ScoreAdmin(BaseAdmin):
     list_display = ("game", "score", "player", "tournament", "date_created")
     search_fields = ("game__name", "score", "player__first_name", "player__last_name", "player__initials", "tournament__name")
     list_filter = (('game', admin.RelatedOnlyFieldListFilter), ('player', admin.RelatedOnlyFieldListFilter),
                    ('tournament', admin.RelatedOnlyFieldListFilter),)
+    readonly_fields = ["date_created", "tournament"]
 
 
 class PlayerAdmin(BaseAdmin):
@@ -176,21 +178,23 @@ class MatchForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         tournament = get_object_or_None(Tournament, is_active=True)
-        if tournament:
+        if "tournament" in self.fields:
             self.fields["tournament"].initial = tournament
 
     def clean(self):
-        if not self.cleaned_data["division"]:
-            raise ValidationError(_("You must select the division"))
+        if "division" in self.cleaned_data:
+            if not self.cleaned_data["division"]:
+                raise ValidationError(_("You must select the division"))
 
-        if self.cleaned_data["division"] != "A" and self.cleaned_data["division"] != "B":
-            raise ValidationError(_("The division must be A or B"))
+                if self.cleaned_data["division"] != "A" and self.cleaned_data["division"] != "B":
+                    raise ValidationError(_("The division must be A or B"))
 
     def clean_winner(self):
         if self.cleaned_data["winner"]:
-            if self.cleaned_data["player1"] and self.cleaned_data["player2"]:
-                if (self.cleaned_data["winner"] != self.cleaned_data["player1"]) and (self.cleaned_data["winner"] != self.cleaned_data["player2"]):
-                    raise ValidationError(_("The winner must be one of the selected players"))
+            if "player1" in self.cleaned_data and "player2" in self.cleaned_data:
+                if self.cleaned_data["player1"] and self.cleaned_data["player2"]:
+                    if (self.cleaned_data["winner"] != self.cleaned_data["player1"]) and (self.cleaned_data["winner"] != self.cleaned_data["player2"]):
+                        raise ValidationError(_("The winner must be one of the selected players"))
         return self.cleaned_data["winner"]
 
     class Meta:
@@ -199,12 +203,22 @@ class MatchForm(ModelForm):
 
 
 class MatchAdmin(BaseAdmin):
-    list_display = ("player1", "player2", "winner", "tournament", "is_tiebreaker", "date_created", "division")
+    list_display = ("player1", "player2", "game", "winner", "tournament", "is_tiebreaker", "date_created", "division")
     search_fields = ("player1__first_name", "player1__last_name", "player1__initials", "player2__first_name",
                      "player2__last_name", "player2__initials", "tournament__name")
     list_filter = (('tournament', admin.RelatedOnlyFieldListFilter), "division", "is_tiebreaker")
-
+    readonly_fields = ["date_created"]
     form = MatchForm
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(super().get_readonly_fields(request, obj))
+        if request.GET.get("set_winner") == "true":
+            readonly_fields.append('is_tiebreaker')
+            readonly_fields.append('date_created')
+            readonly_fields.append('division')
+            readonly_fields.append('game')
+            readonly_fields.append('tournament')
+        return readonly_fields
 
     class Media:
         js = ("js/match.js",)

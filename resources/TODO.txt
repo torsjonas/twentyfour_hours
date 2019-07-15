@@ -2,18 +2,25 @@
  TODO
 ******************************************
 
-- I500 kom två gånger i samma runda vid genereringen
-
-- länka "Edit Match" och "Set Winner", lås fält som man kommer med "Set Winner"
-
 - Visa lite info vid det här om antal spelare osv.:
  [Create playoff matches for the active tournament]
 
 - fixa list index out of range som kan uppstå när man skapar playoff-matcher. Osäker på när det uppstår.
 
 *****************************************
+ BUGGAR
+******************************************
+
+- I500 kom två gånger i samma runda vid genereringen
+    ... mycket oklart varför
+
+*****************************************
  FIXAT
 ******************************************
+
+- länka "Edit Match" och "Set Winner", lås fält som man kommer med "Set Winner"
+
+- göra date_created till readonly-fields
 
 - kolla vad jag ändrade i index.html för att fixa så division syns
 

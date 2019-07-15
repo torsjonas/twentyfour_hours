@@ -1,19 +1,10 @@
-function getLastPart(url) {
-    var parts = url.split("/");
-    return (url.lastIndexOf('/') !== url.length - 1
-       ? parts[parts.length - 1]
-       : parts[parts.length - 2]);
-}
-
 $(document).ready(function() {
 
-    if(getLastPart(window.location.href) == "change") {
+    if(window.location.href.indexOf("/change/") > -1) {
         // only filter on the change page
         var player_1_id = $('#id_player1').val();
         var player_2_id = $('#id_player2').val();
-
         $('#id_winner option').each(function () {
-            console.log($(this).val());
             if($(this).val() != player_1_id && $(this).val() != player_2_id) {
                 if($(this).val()) {
                     $(this).remove();
