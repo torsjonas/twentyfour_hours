@@ -51,6 +51,7 @@ class TournamentManager(models.Manager):
 
         if points:
             n = list(points.keys())[-1]
+            # https://stackoverflow.com/questions/56947847/sort-nested-dictionary-by-variable-number-of-keys
             sorting_method = itemgetter('total_points', 'tiebreak_points', 'player_id', *range(1, n + 1))
             sorted_player_ids = reversed(sorted(standings, key=lambda x: sorting_method(standings[x])))
 
@@ -608,8 +609,6 @@ class Tournament(models.Model):
         return False
 
     def is_multiple_division(self):
-        print(self.number_of_players_in_a_division)
-        print(self.number_of_players_in_b_division)
         if self.number_of_players_in_a_division and self.number_of_players_in_b_division:
             return True
         return False
