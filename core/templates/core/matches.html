@@ -74,7 +74,7 @@
                 {% endif %}
             </td>
             {% if request.user.is_staff %}
-                <th scope="col"><small><a href="{{ match.get_admin_url }}?set_winner=true" target="_blank">{% trans "Set winner" %}</a></small></th>
+                <th scope="col"><small><a href="" data-url="{{ match.get_admin_url }}?set_winner=true" class="set-winner-link">{% trans "Set winner" %}</a></small></th>
             {% endif %}
         </tr>
     {% endfor %}

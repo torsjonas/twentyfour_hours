@@ -2,6 +2,12 @@ function formatScore(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
+function popitup(url) {
+    newwindow=window.open(url,'name','height=500,width=1000');
+    if (window.focus) {newwindow.focus()}
+    return false;
+}
+
 $(document).ready(function() {
 
 $("select").each(function(){
@@ -21,6 +27,11 @@ $('#score_form').on('submit', function(e) {
             e.preventDefault();
         }
     }
+});
+
+$(".set-winner-link").click(function(e){
+    e.preventDefault();
+    popitup($(this).data("url"));
 });
 
 });
