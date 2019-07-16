@@ -161,7 +161,11 @@ class TournamentManager(models.Manager):
                             standings[score.player.id] = dict()
                             standings[score.player.id]["player_id"] = score.player.id
                             if position <= list(points.keys())[-1]:
-                                standings[score.player.id]["total_points"] = points[position]
+                                if not game.is_canceled:
+                                    standings[score.player.id]["total_points"] = points[position]
+                                else:
+                                    # don't award points on canceled games
+                                    standings[score.player.id]["total_points"] = 0
                             else:
                                 standings[score.player.id]["total_points"] = 0
                             standings[score.player.id]["tiebreak_points"] = 0
@@ -172,7 +176,12 @@ class TournamentManager(models.Manager):
                         else:
                             # a key exists for this player
                             if position <= list(points.keys())[-1]:
-                                standings[score.player.id]["total_points"] += points[position]
+                                if not game.is_canceled:
+                                    standings[score.player.id]["total_points"] += points[position]
+                                else:
+                                    # don't award points on canceled games
+                                    standings[score.player.id]["total_points"] += 0
+
                     player_ids.append(score.player.id)
 
             # add tiebreak points
@@ -497,6 +506,7 @@ class Game(models.Model):
     abbreviation = models.CharField(max_length=16, unique=True)
     is_active = models.BooleanField(default=False, null=False, blank=False)
     is_active_in_playoffs = models.BooleanField(default=False)
+    is_canceled = models.BooleanField(default=False)
 
     objects = GameManager()
 

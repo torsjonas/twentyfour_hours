@@ -86,8 +86,8 @@ class BaseAdmin(admin.ModelAdmin):
 
 
 class GameAdmin(ModelAdmin):
-    list_display = ("name", "abbreviation", "is_active", "is_active_in_playoffs")
-    list_filter = ("is_active", "is_active_in_playoffs")
+    list_display = ("name", "abbreviation", "is_active", "is_active_in_playoffs", "is_canceled")
+    list_filter = ("is_active", "is_active_in_playoffs", "is_canceled")
     search_fields = ("name", "abbreviation")
     actions = [activate_games, inactivate_games, activate_games_in_playoff, inactivate_games_in_playoff]
 

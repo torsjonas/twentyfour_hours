@@ -34,20 +34,59 @@
     <div class="table-responsive">
         <table class="table">
         <tbody>
-        {% for game_score in game_scores %}
+        {% for game in game_scores %}
             <tr class="distinct fluff">
-                <td colspan="10"><a id="{{ game_score.id }}"><h4>{{ game_score.name }}</h4></a></td>
+                <td colspan="10">
+                    <a id="{{ game.id }}">
+                    <h4>
+                        {% if game.is_canceled %}
+                            <del>
+                        {% endif %}
+                        {{ game.name }}
+                        {% if game.is_canceled %}
+                            </del>
+                        {% endif %}
+                        {% if game.is_canceled %}
+                            ({% trans "Canceled" %})
+                        {% endif %}
+                    </h4>
+                    </a>
+                </td>
             </tr>
-            {% if not game_score.scores %}
+            {% if not game.scores %}
                 <tr>
                     <td colspan="10">{% trans "There are no scores for this game" %}</td>
                 </tr>
             {% endif %}
-            {% for game_score in game_score.scores %}
+            {% for game_score in game.scores %}
                 <tr class="{% cycle 'row1' 'row2' %}">
-                    <td><strong>{{ game_score.position }}</strong> {% if game_score.points %}({{ game_score.points }}){% endif %}</td>
-                    <td>{{ game_score.score|intdot }}</td>
-                    <td><a href="{{ game_score.player.get_url }}">{{ game_score.player.get_initials_and_name }}</a></td>
+                    <td>
+                        {% if game.is_canceled %}
+                            <del>
+                        {% endif %}
+                        <strong>{{ game_score.position }}</strong> {% if game_score.points %}({{ game_score.points }}){% endif %}
+                        {% if game.is_canceled %}
+                            </del>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if game.is_canceled %}
+                            <del>
+                        {% endif %}
+                            {{ game_score.score|intdot }}
+                        {% if game.is_canceled %}
+                            </del>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if game.is_canceled %}
+                            <del>
+                        {% endif %}
+                        <a href="{{ game_score.player.get_url }}">{{ game_score.player.get_initials_and_name }}</a>
+                        {% if game.is_canceled %}
+                            </del>
+                        {% endif %}
+                    </td>
                     <td><i class="{{ game_score.player.country.flag_css }}"></i></td>
                     {% if request.user.is_staff %}
                         <td><small><a href="{{ game_score.get_admin_url }}" target="_blank">{% trans "Edit score" %}</a></small></td>
