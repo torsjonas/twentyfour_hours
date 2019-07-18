@@ -31,187 +31,6 @@ class KeyValueManager(models.Manager):
     def get_qualification_rules(self):
         return get_object_or_None(KeyValue, key="qualification_rules")
 
-
-class TournamentManager(models.Manager):
-
-    def fix_and_sort_standings(self, standings, points, game_scores, division=None):
-        # well, do some weird sorting
-
-        # add number of positions to the player
-        if game_scores:
-            for game in game_scores:
-                position = 1
-                for score in game.scores:
-                    if position > list(points.keys())[-1]:
-                        break
-                    standings[score.player.id][position] += 1
-                    position += 1
-
-        position_standings = []
-
-        if points:
-            n = list(points.keys())[-1]
-            # https://stackoverflow.com/questions/56947847/sort-nested-dictionary-by-variable-number-of-keys
-            sorting_method = itemgetter('total_points', 'tiebreak_points', 'player_id', *range(1, n + 1))
-            sorted_player_ids = reversed(sorted(standings, key=lambda x: sorting_method(standings[x])))
-
-            sorted_standings = []
-            for player_id in sorted_player_ids:
-                sorted_standings.append(standings[player_id])
-
-            position_standings = self.add_tiebreak_points_and_position(sorted_standings, points)
-            standings = self.set_division_for_standings(position_standings)
-
-        if division:
-            position_standings = self.filter_by_division_and_set_position(position_standings, division)
-
-        return position_standings
-
-    def set_division_for_standings(self, standings):
-        # set the divisions for the standings, if any
-        tournament = get_object_or_None(Tournament, is_active=True)
-        if tournament:
-            total_number_of_players_in_playoffs = tournament.number_of_players_in_a_division
-            if tournament.number_of_players_in_b_division:
-                total_number_of_players_in_playoffs += tournament.number_of_players_in_b_division
-
-            if tournament.playoffs_are_active:
-                for index, standing in enumerate(standings):
-                    position = index + 1
-                    if position <= tournament.number_of_players_in_a_division:
-                        standing["division"] = "A"
-                    elif position <= total_number_of_players_in_playoffs:
-                         standing["division"] = "B"
-                    else:
-                        standing["division"] = None
-
-        return standings
-
-    def filter_by_division_and_set_position(self, standings, division):
-        # ouch, getting the entire standings again, without division just to filter out the one's
-        # that are in the selected division
-        total_standings, dummy = self.get_standings_and_game_scores(get_game_scores=False)
-        filtered_standings_player_ids = []
-        for standing in total_standings:
-            if ("division" in standing) and standing["division"] == division:
-                filtered_standings_player_ids.append(standing["player"].id)
-
-        # filter out by division if we have a division, and set the position
-        if division:
-            division_standings = []
-            position = 1
-            for standing in standings:
-                if standing["player"].id in filtered_standings_player_ids:
-                    standing["position"] = position
-                    # force the division
-                    standing["division"] = division
-                    position += 1
-                    division_standings.append(standing)
-
-            standings = division_standings
-
-        return standings
-
-    def add_tiebreak_points_and_position(self, standings, points):
-        position = 0
-        position_standings = []
-        previous_standing = None
-        for standing in standings:
-            increase_position = False
-            if not previous_standing or (previous_standing["total_points"] != standing["total_points"]) \
-                    or previous_standing["tiebreak_points"]:
-                increase_position += True
-
-            if previous_standing and not increase_position:
-                for point in points:
-                    if previous_standing[point] != standing[point]:
-                        increase_position = True
-
-            if increase_position:
-                position += 1
-
-            standing["position"] = position
-            previous_standing = standing
-            position_standings.append(standing)
-
-        return position_standings
-
-    def get_division_standings(self, division):
-        standings, dummy = Tournament.objects.get_standings_and_game_scores(get_game_scores=False)
-        filtered_standings = []
-        for standing in standings:
-            if standing["division"] == division:
-                filtered_standings.append(standing)
-
-        return filtered_standings
-
-    def get_standings_and_game_scores(self, division=None, get_game_scores=True, skip_standings=False):
-        standings = []
-
-        if not skip_standings:
-            points = get_points_in_dict()
-            standings = dict()
-            for game in Game.objects.filter(is_active=True):
-                player_ids = []
-                for index, score in enumerate(Score.objects.active().filter(game=game).order_by("-score")):
-                    position = index + 1
-                    if not score.player.id in player_ids:
-                        # don't award multiple points for the same game for the player
-                        if not score.player.id in standings:
-                            # no key exists for this player
-                            standings[score.player.id] = dict()
-                            standings[score.player.id]["player_id"] = score.player.id
-                            if position <= list(points.keys())[-1]:
-                                if not game.is_canceled:
-                                    standings[score.player.id]["total_points"] = points[position]
-                                else:
-                                    # don't award points on canceled games
-                                    standings[score.player.id]["total_points"] = 0
-                            else:
-                                standings[score.player.id]["total_points"] = 0
-                            standings[score.player.id]["tiebreak_points"] = 0
-                            standings[score.player.id]["match_points"] = 0
-                            for point in points:
-                                standings[score.player.id][point] = 0
-                            standings[score.player.id]["player"] = score.player
-                        else:
-                            # a key exists for this player
-                            if position <= list(points.keys())[-1]:
-                                if not game.is_canceled:
-                                    standings[score.player.id]["total_points"] += points[position]
-                                else:
-                                    # don't award points on canceled games
-                                    standings[score.player.id]["total_points"] += 0
-
-                    player_ids.append(score.player.id)
-
-            # add tiebreak points
-            tournament = get_object_or_None(Tournament, is_active=True)
-            if tournament:
-                for match in Match.objects.filter(tournament=tournament, is_tiebreaker=True):
-                    standings[match.winner.id]["tiebreak_points"] += 1
-
-            if tournament and tournament.match_points:
-                # set the high score points and match points for all players
-                for player_id in standings:
-                    standings[player_id]["high_score_points"] = standings[player_id]["total_points"]
-                    standings[player_id]["match_points"] = 0
-                    if tournament.playoffs_are_active and division:
-                        for match in Match.objects.filter(tournament=tournament, winner=standings[player_id]["player"]):
-                            standings[player_id]["total_points"] += tournament.match_points
-                            standings[player_id]["match_points"] += tournament.match_points
-
-        if get_game_scores:
-            game_scores = Game.objects.get_all_scores()
-        else:
-            game_scores = None
-
-        if not skip_standings:
-            return self.fix_and_sort_standings(standings, points, game_scores, division), game_scores
-        else:
-            return standings, game_scores
-
-
 class MatchManager(models.Manager):
 
     def get_division_matches(self, matches, division):
@@ -222,19 +41,18 @@ class MatchManager(models.Manager):
 
         return division_matches
 
-    def get_active_matches(self):
-        tournament = Tournament.objects.get(is_active=True)
+    def get_active_matches(self, tournament):
         matches = Match.objects.filter(is_tiebreaker=False, tournament=tournament)
         # set the round of the matches
         a_division_matches = self.get_division_matches(matches, "A")
         b_division_matches = self.get_division_matches(matches, "B")
-        self.set_round_of_matches(a_division_matches, "A")
-        self.set_round_of_matches(b_division_matches, "B")
+        self.set_round_of_matches(a_division_matches, "A", tournament)
+        self.set_round_of_matches(b_division_matches, "B", tournament)
         return matches
 
-    def set_round_of_matches(self, matches, division):
+    def set_round_of_matches(self, matches, division, tournament):
         round_number = 1
-        division_standings = Tournament.objects.get_division_standings(division)
+        division_standings = tournament.get_division_standings(division)
         odd = False
         if len(division_standings) % 2 != 0:
             odd = True
@@ -250,10 +68,8 @@ class MatchManager(models.Manager):
             if match_number % number_of_matches_per_round == 0:
                 round_number += 1
 
-    def create_playoff_matches(self):
-        tournament = get_object_or_None(Tournament, is_active=True)
-
-        if not tournament:
+    def create_playoff_matches(self, tournament):
+        if not tournament or not tournament.is_active:
             raise Exception("There's no active tournament")
 
         if not tournament.playoffs_are_active:
@@ -262,7 +78,7 @@ class MatchManager(models.Manager):
         if tournament.playoff_matches_are_created:
             raise Exception("The playoff matches have already been created for the active tournament")
 
-        standings, dummy = Tournament.objects.get_standings_and_game_scores(get_game_scores=False)
+        standings, dummy = tournament.get_standings_and_game_scores(get_game_scores=False)
         a_division_standings = []
         b_division_standings = []
         for standing in standings:
@@ -416,7 +232,7 @@ class MatchManager(models.Manager):
 
 class GameManager(models.Manager):
 
-    def get_all_scores(self):
+    def get_all_scores(self, tournament):
         points = get_points_in_dict()
         games = []
         for game in Game.objects.filter(is_active=True).order_by("name"):
@@ -424,7 +240,8 @@ class GameManager(models.Manager):
             game.scores = []
             player_ids = []
 
-            for index, score in enumerate(Score.objects.active().filter(game=game).order_by("-score")):
+            scores = Score.objects.filter(tournament=tournament, game=game).order_by("-score")
+            for index, score in enumerate(scores):
                 position = index + 1
                 score.position = position
                 score.points = 0
@@ -444,32 +261,30 @@ class PlayerManager(models.Manager):
         # now these loops truly suck ... the game_scores are used since they have the position and points
         score_overview = []
         total_points = 0
-        tournament = Tournament.objects.get(is_active=True)
 
-        if tournament:
-            for ordered_game in Game.objects.filter(is_active=True).order_by("name"):
-                overview = dict()
-                for game in game_scores:
-                    # mixing dicts and object properties here, d-oh
-                    overview["game"] = game
-                    overview["score"] = None
-                    overview["points"] = 0
-                    overview["position"] = None
+        for ordered_game in Game.objects.filter(is_active=True).order_by("name"):
+            overview = dict()
+            for game in game_scores:
+                # mixing dicts and object properties here, d-oh
+                overview["game"] = game
+                overview["score"] = None
+                overview["points"] = 0
+                overview["position"] = None
 
-                    if ordered_game == game:
-                        for score in game.scores:
-                            if score.player == player:
-                                overview["score"] = score
-                                overview["points"] = score.points
-                                overview["position"] = score.position
-                                total_points += score.points
-                            if score.player == player:
-                                break
-                            else:
-                                continue
-                        break
+                if ordered_game == game:
+                    for score in game.scores:
+                        if score.player == player:
+                            overview["score"] = score
+                            overview["points"] = score.points
+                            overview["position"] = score.position
+                            total_points += score.points
+                        if score.player == player:
+                            break
+                        else:
+                            continue
+                    break
 
-                score_overview.append(overview)
+            score_overview.append(overview)
 
         return score_overview, total_points
 
@@ -483,9 +298,9 @@ class ScoreManager(models.Manager):
 
         return Score.objects.none()
 
-    def get_top_scores(self):
+    def get_top_scores(self, tournament):
         limit = Points.objects.all().count()
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores(skip_standings=True)
+        standings, game_scores = tournament.get_standings_and_game_scores(skip_standings=True)
         for game in game_scores:
             game.top_scores = []
             for index, score in enumerate(game.scores):
@@ -511,8 +326,9 @@ class Game(models.Model):
 
     objects = GameManager()
 
-    def get_qualification_url(self):
-        return "/?q=true#" + str(self.id)
+    @staticmethod
+    def get_qualification_url(game, tournament):
+        return "/?tournament=" + str(tournament.id) + "&q=true#" + str(game.id)
 
     class Meta:
         ordering = ["name"]
@@ -531,8 +347,9 @@ class Player(models.Model):
 
     objects = PlayerManager()
 
-    def get_url(self):
-        return reverse("player_detail", args=[self.id])
+    @staticmethod
+    def get_url(player, tournament):
+        return "/player/" + str(player.id) + "?tournament=" + str(tournament.id)
 
     def get_ifpa_url(self):
         if self.ifpa_id:
@@ -618,7 +435,183 @@ class Tournament(models.Model):
             return True
         return False
 
-    objects = TournamentManager()
+    def get_standings_and_game_scores(self, division=None, get_game_scores=True, skip_standings=False):
+        standings = []
+
+        if not skip_standings:
+            points = get_points_in_dict()
+            standings = dict()
+            for game in Game.objects.filter(is_active=True):
+                player_ids = []
+                scores = Score.objects.filter(tournament=self, game=game).order_by("-score")
+
+                for index, score in enumerate(scores):
+                    position = index + 1
+                    if not score.player.id in player_ids:
+                        # don't award multiple points for the same game for the player
+                        if not score.player.id in standings:
+                            # no key exists for this player
+                            standings[score.player.id] = dict()
+                            standings[score.player.id]["player_id"] = score.player.id
+                            if position <= list(points.keys())[-1]:
+                                if not game.is_canceled:
+                                    standings[score.player.id]["total_points"] = points[position]
+                                else:
+                                    # don't award points on canceled games
+                                    standings[score.player.id]["total_points"] = 0
+                            else:
+                                standings[score.player.id]["total_points"] = 0
+                            standings[score.player.id]["tiebreak_points"] = 0
+                            standings[score.player.id]["match_points"] = 0
+                            for point in points:
+                                standings[score.player.id][point] = 0
+                            standings[score.player.id]["player"] = score.player
+                        else:
+                            # a key exists for this player
+                            if position <= list(points.keys())[-1]:
+                                if not game.is_canceled:
+                                    standings[score.player.id]["total_points"] += points[position]
+                                else:
+                                    # don't award points on canceled games
+                                    standings[score.player.id]["total_points"] += 0
+
+                    player_ids.append(score.player.id)
+
+            # add tiebreak points
+            for match in Match.objects.filter(tournament=self, is_tiebreaker=True):
+                standings[match.winner.id]["tiebreak_points"] += 1
+
+            if self.match_points:
+                # set the high score points and match points for all players
+                for player_id in standings:
+                    standings[player_id]["high_score_points"] = standings[player_id]["total_points"]
+                    standings[player_id]["match_points"] = 0
+                    if self.playoffs_are_active and division:
+                        for match in Match.objects.filter(tournament=self, winner=standings[player_id]["player"]):
+                            standings[player_id]["total_points"] += self.match_points
+                            standings[player_id]["match_points"] += self.match_points
+
+        if get_game_scores:
+            game_scores = Game.objects.get_all_scores(self)
+        else:
+            game_scores = None
+
+        if not skip_standings:
+            return self.fix_and_sort_standings(standings, points, game_scores, division), game_scores
+        else:
+            return standings, game_scores
+
+    def fix_and_sort_standings(self, standings, points, game_scores, division=None):
+        # well, do some weird sorting
+
+        # add number of positions to the player
+        if game_scores and points:
+            for game in game_scores:
+                position = 1
+                for score in game.scores:
+                    if position > list(points.keys())[-1]:
+                        break
+                    standings[score.player.id][position] += 1
+                    position += 1
+
+        position_standings = []
+
+        if points:
+            n = list(points.keys())[-1]
+            # https://stackoverflow.com/questions/56947847/sort-nested-dictionary-by-variable-number-of-keys
+            sorting_method = itemgetter('total_points', 'tiebreak_points', 'player_id', *range(1, n + 1))
+            sorted_player_ids = reversed(sorted(standings, key=lambda x: sorting_method(standings[x])))
+
+            sorted_standings = []
+            for player_id in sorted_player_ids:
+                sorted_standings.append(standings[player_id])
+
+            position_standings = self.add_tiebreak_points_and_position(sorted_standings, points)
+            standings = self.set_division_for_standings(position_standings)
+
+        if division:
+            position_standings = self.filter_by_division_and_set_position(position_standings, division)
+
+        return position_standings
+
+
+    def add_tiebreak_points_and_position(self, standings, points):
+        position = 0
+        position_standings = []
+        previous_standing = None
+        for standing in standings:
+            increase_position = False
+            if not previous_standing or (previous_standing["total_points"] != standing["total_points"]) \
+                    or previous_standing["tiebreak_points"]:
+                increase_position += True
+
+            if previous_standing and not increase_position:
+                for point in points:
+                    if previous_standing[point] != standing[point]:
+                        increase_position = True
+
+            if increase_position:
+                position += 1
+
+            standing["position"] = position
+            previous_standing = standing
+            position_standings.append(standing)
+
+        return position_standings
+
+    def set_division_for_standings(self, standings):
+        # set the divisions for the standings, if any)
+        total_number_of_players_in_playoffs = self.number_of_players_in_a_division
+        if self.number_of_players_in_b_division:
+            total_number_of_players_in_playoffs += self.number_of_players_in_b_division
+
+        if self.playoffs_are_active:
+            for index, standing in enumerate(standings):
+                position = index + 1
+                if position <= self.number_of_players_in_a_division:
+                    standing["division"] = "A"
+                elif position <= total_number_of_players_in_playoffs:
+                        standing["division"] = "B"
+                else:
+                    standing["division"] = None
+
+        return standings
+
+    def filter_by_division_and_set_position(self, standings, division):
+        # ouch, getting the entire standings again, without division just to filter out the one's
+        # that are in the selected division
+        total_standings, dummy = self.get_standings_and_game_scores(get_game_scores=False)
+        filtered_standings_player_ids = []
+        for standing in total_standings:
+            if ("division" in standing) and standing["division"] == division:
+                filtered_standings_player_ids.append(standing["player"].id)
+
+        # filter out by division if we have a division, and set the position
+        if division:
+            division_standings = []
+            position = 1
+            for standing in standings:
+                if standing["player"].id in filtered_standings_player_ids:
+                    standing["position"] = position
+                    # force the division
+                    standing["division"] = division
+                    position += 1
+                    division_standings.append(standing)
+
+            standings = division_standings
+
+        return standings
+
+    def get_division_standings(self, division):
+        standings, dummy = self.get_standings_and_game_scores(get_game_scores=False)
+        filtered_standings = []
+        for standing in standings:
+            if standing["division"] == division:
+                filtered_standings.append(standing)
+
+        return filtered_standings
+
+    objects = models.Manager()
 
     def __str__(self):
         return str(self.name) + " - " + str(self.start_date) + "-" + str(self.end_date)

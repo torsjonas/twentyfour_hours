@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from core import views
 from core.views import IndexView, PlayerCreateView, PlayerCreatedView, RegisteredPlayersView, ScoreCreateView, \
-    ScoreCreatedView, MatchesView, PlayerDetailView, LatestScoresView, TopScoresView
+    ScoreCreatedView, MatchesView, PlayerDetailView, LatestScoresView, TopScoresView, TournamentsView
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name='index'),
@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'^playoff-matches/create/$', views.create_playoff_matches, name='create_playoff_matches'),
     url(r'^scores/latest/$', LatestScoresView.as_view(), name='latest_scores'),
     url(r'^scores/top/$', TopScoresView.as_view(), name='top_scores'),
+    url(r'^tournaments/$', TournamentsView.as_view(), name='tournaments')
 ]

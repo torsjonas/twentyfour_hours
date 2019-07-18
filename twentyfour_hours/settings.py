@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'twentyfour_hours.middleware.SetTournamentMiddleware'
 ]
 
 ROOT_URLCONF = 'twentyfour_hours.urls'

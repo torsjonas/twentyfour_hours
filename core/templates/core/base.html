@@ -49,29 +49,32 @@
         </ul>
         <div class="container center-navbar-container">
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tournaments' %}">{% trans "Tournaments" %}</a>
+                </li>
                 {% if TOURNAMENT.playoffs_are_active %}
                     {% if TOURNAMENT.is_a_division_only %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/?division=A">{% trans "Results" %}</a>
+                            <a class="nav-link" href="/?tournament={{ TOURNAMENT.id }}&division=A">{% trans "Results" %}</a>
                         </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="/?division=A">{% trans "A division" %}</a>
+                            <a class="nav-link" href="/?tournament={{ TOURNAMENT.id }}&division=A">{% trans "A division" %}</a>
                         </li>
                         {% if TOURNAMENT.number_of_players_in_b_division %}
                             <li class="nav-item">
-                                <a class="nav-link" href="/?division=B">{% trans "B division" %}</a>
+                                <a class="nav-link" href="/?tournament={{ TOURNAMENT.id }}&division=B">{% trans "B division" %}</a>
                             </li>
                         {% endif %}
                     {% endif %}
                 {% endif %}
                 {% if TOURNAMENT.playoffs_are_active %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url "matches" %}">{% trans "Playoff matches" %}</a>
+                        <a class="nav-link" href="{% url 'matches' %}">{% trans "Playoff matches" %}</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="/?q=true">
+                    <a class="nav-link" href="/?tournament={{ TOURNAMENT.id }}&q=true">
                         {% if not TOURNAMENT.playoffs_are_active %}
                             {% trans "Standings" %}
                         {% else %}
@@ -79,16 +82,18 @@
                         {% endif %}
                     </a>
                 </li>
-                {% if not TOURNAMENT.disable_score_registering or request.user.is_staff %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url "register_score" %}">{% trans "Register Score" %}</a>
-                    </li>
+                {% if TOURNAMENT.is_active %}
+                    {% if not TOURNAMENT.disable_score_registering or request.user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'register_score' %}?tournament={{ TOURNAMENT.id }}">{% trans "Register Score" %}</a>
+                        </li>
+                    {% endif %}
                 {% endif %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "register" %}">{% trans "Register" %}</a>
+                    <a class="nav-link" href="{% url 'register' %}?tournament={{ TOURNAMENT.id }}">{% trans "Register" %}</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url "registered_players" %}">{% trans "Players" %}</a>
+                    <a class="nav-link" href="{% url 'registered_players' %}?tournament={{ TOURNAMENT.id }}">{% trans "Players" %}</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/admin/" target="_blank">{% trans "Admin" %}</a>
