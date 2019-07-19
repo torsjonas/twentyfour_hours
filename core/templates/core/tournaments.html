@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+{% load i18n %}
+{% block content %}
+<h1>{% trans "Tournaments" %}</h1>
+
+{% if tournaments %}
+<div class="table-responsive">
+    <table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">{% trans "Name" %}</th>
+            <th scope="col">{% trans "Start Date" %}</th>
+            <th scope="col">{% trans "Active" %}</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for tournament in tournaments %}
+        <tr>
+            <td><a href="/?tournament={{ tournament.id }}">{{ tournament.name }}</a></td>
+            <td><a href="/?tournament={{ tournament.id }}">{{ tournament.start_date }}</a></td>
+            <td><a href="/?tournament={{ tournament.id }}">{{ tournament.is_active }}</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
+{% else %}
+    {% trans "There are no tournaments" %}
+{% endif %}
+{% endblock %}

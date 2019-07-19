@@ -1,5 +1,5 @@
 {% extends "core/base.html" %}
-{% load i18n %}
+{% load i18n tags %}
 {% block content %}
 <h1>{% trans "Registered players" %}</h1>
 
@@ -16,8 +16,8 @@
     <tbody>
     {% for player in players %}
         <tr>
-            <td><a href="{{ player.get_url }}">{{ player.initials }}</a></td>
-            <td><a href="{{ player.get_url }}">{{ player.first_name }} {{ player.last_name }}</a></td>
+            <td><a href="{% get_player_url player TOURNAMENT %}">{{ player.initials }}</a></td>
+            <td><a href="{% get_player_url player TOURNAMENT %}">{{ player.first_name }} {{ player.last_name }}</a></td>
             <td><i class="{{ player.country.flag_css }}"></i> {{ player.country.name }}</td>
         </tr>
     {% endfor %}

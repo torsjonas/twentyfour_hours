@@ -25,7 +25,7 @@
         <tr class="{% cycle 'row1' 'row2' %}">
             <td><a href="/#{{ score.game.id }}">{{ score.game.name }}</a></td>
             <td>{{ score.score|intdot }}</td>
-            <td><a href="{{ score.player.get_url }}">{{ score.player.get_initials_and_name }}</a></td>
+            <td><a href="{{ get_player_url score.player TOURNAMENT }}">{{ score.player.get_initials_and_name }}</a></td>
             <td><i class="{{ score.player.country.flag_css }}"></i></td>
         </tr>
     {% endfor %}
