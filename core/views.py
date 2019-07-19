@@ -13,12 +13,11 @@ from django.views.generic import TemplateView, CreateView, DetailView
 
 from core.models import Player, Score, Game, Tournament, Points, Match, KeyValue
 
-
 class IndexView(TemplateView):
     template_name = "core/index.html"
 
     def get(self, request, *args, **kwargs):
-        tournament = get_object_or_None(Tournament, is_active=True)
+        tournament = request.tournament
         division = request.GET.get("division")
         if tournament and tournament.playoffs_are_active:
             if not division and not request.GET.get("q"):
@@ -28,25 +27,25 @@ class IndexView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        division = self.request.GET.get("division")
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores(division)
-        active_tournament = get_object_or_None(Tournament, is_active=True)
-        context["standings"] = standings
-        context["game_scores"] = game_scores
-        context["active_tournament"] = active_tournament
-        context["has_tiebreak_points"] = False
-        context["points"] = Points.objects.all().order_by("-points")
-        context["divisions_active"] = False
-        context["qualification_rules"] = KeyValue.objects.get_qualification_rules()
-        context["display_score_links"] = True
+        tournament = self.request.tournament
+        if (tournament):
+            division = self.request.GET.get("division")
+            standings, game_scores = tournament.get_standings_and_game_scores(division)
+            context["standings"] = standings
+            context["game_scores"] = game_scores
+            context["has_tiebreak_points"] = False
+            context["points"] = Points.objects.all().order_by("-points")
+            context["divisions_active"] = False
+            context["qualification_rules"] = KeyValue.objects.get_qualification_rules()
+            context["display_score_links"] = True
 
-        if active_tournament and (active_tournament.number_of_players_in_a_division
-                                  or active_tournament.number_of_players_in_b_division):
-            context["divisions_active"] = True
+            if (tournament.number_of_players_in_a_division
+                                  or tournament.number_of_players_in_b_division):
+                context["divisions_active"] = True
 
-        for standing in standings:
-            if standing["tiebreak_points"] != 0:
-                context["has_tiebreak_points"] = True
+            for standing in standings:
+                if standing["tiebreak_points"] != 0:
+                    context["has_tiebreak_points"] = True
 
         return context
 
@@ -163,11 +162,13 @@ class ScoreCreateView(CreateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        tournament = get_object_or_None(Tournament, is_active=True)
+        tournament = self.request.tournament
+        if not tournament.is_active:
+            raise ValidationError("The tournament is not active")
+
         if tournament and tournament.disable_score_registering:
             if not self.request.user.is_staff:
                 raise PermissionDenied()
-        context["active_tournament"] = tournament
         return context
 
 
@@ -179,7 +180,8 @@ class ScoreCreatedView(TemplateView):
         score = get_object_or_404(Score, id=self.request.GET.get("score_id"))
         context["score"] = score
         # ouch, again, get the entire game_scores to show points and position
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores(skip_standings=True)
+        tournament = self.request.tournament
+        standings, game_scores = tournament.get_standings_and_game_scores(skip_standings=True)
         context["points"] = 0
         for game in game_scores:
             if game == score.game:
@@ -197,7 +199,8 @@ class MatchesView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        matches = Match.objects.get_active_matches()
+        tournament = self.request.tournament
+        matches = Match.objects.get_active_matches(tournament)
         context["matches"] = matches
         # to fix a bug that occurs if the number of players to playoffs in the division
         # is higher than the actual number of players that qualified the "rounds"-bit will
@@ -214,12 +217,15 @@ class MatchesView(TemplateView):
 
 @staff_member_required
 def create_playoff_matches(request):
-    tournament = get_object_or_None(Tournament, is_active=True)
+    tournament = request.tournament
+    if not tournament or not tournament.is_active:
+        raise ValidationError("The tournament is not active")
+
     if tournament and tournament.playoff_matches_are_created:
         messages.add_message(request, messages.ERROR, _("The playoff matches have already been created"))
     else:
         try:
-            matches = Match.objects.create_playoff_matches()
+            matches = Match.objects.create_playoff_matches(tournament)
             if matches:
                 messages.add_message(request, messages.INFO, _("%s playoff matches were created") % len(matches))
             else:
@@ -236,7 +242,8 @@ class PlayerDetailView(DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        standings, game_scores = Tournament.objects.get_standings_and_game_scores()
+        tournament = self.request.tournament
+        standings, game_scores = tournament.get_standings_and_game_scores()
         score_overview, total_points = Player.objects.get_score_overview(game_scores, self.object)
         context["score_overview"] = score_overview
         context["total_points"] = total_points
@@ -273,7 +280,7 @@ class LatestScoresView(TemplateView):
     def get_context_data(self, *args, **kwargs):
         limit = 100
         context = super().get_context_data(*args, **kwargs)
-        tournament = Tournament.objects.get(is_active=True)
+        tournament = self.request.tournament
         if tournament:
             context["scores"] = Score.objects.filter(tournament=tournament).order_by("-id")[:limit]
 
@@ -286,6 +293,16 @@ class TopScoresView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context["top_scores"] = Score.objects.get_top_scores()
+        context["top_scores"] = Score.objects.get_top_scores(self.request.tournament)
         context["points"] = Points.objects.all()
+        return context
+
+class TournamentsView(TemplateView):
+    template_name = "core/tournaments.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        tournaments = Tournament.objects.all()
+        context["tournaments"] = tournaments
+
         return context

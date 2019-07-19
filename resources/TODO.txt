@@ -1,4 +1,11 @@
 ******************************************
+ Ideas
+******************************************
+- clona players till en avslutad tävling så att historiska resultat kan visas trots att players har raderats
+- clona games till en avslutad tävling så att historiska resultat kan visas trots att games har raderats / satts till inaktiva
+- clona points till en avslutad tävling så att historiska päng kan visas trots att points har ändrats efter tävlingens slut
+
+******************************************
  TODO
 ******************************************
 
@@ -12,6 +19,9 @@
 
 - I500 kom två gånger i samma runda vid genereringen
     ... mycket oklart varför
+
+- player scores -> "View all scores" - Oklart vad som borde visas, oavsett visas fel data nu
+
 
 *****************************************
  FIXAT
@@ -172,3 +182,7 @@
 - lista spelare
 
 - registrera poäng
+
+- Lista alla tournaments och länka till deras standings
+
+- Visa tournament by id från query string, eller fallback på is_active=True

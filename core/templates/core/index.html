@@ -3,11 +3,11 @@
 
 {% block content %}
 
-{% if active_tournament %}
+{% if TOURNAMENT %}
     {% if request.GET.division %}
         <h1>
             {% if request.GET.division == "A" %}
-                {% if active_tournament.a_division_is_finalized %}
+                {% if TOURNAMENT.a_division_is_finalized %}
                     {% if TOURNAMENT.is_a_division_only %}
                         {% trans "Final results of" %} {{ TOURNAMENT.name }}
                     {% else %}
@@ -18,7 +18,7 @@
                 {% endif %} 
             {% endif %}
             {% if request.GET.division == "B" %}
-                {% if active_tournament.b_division_is_finalized %}
+                {% if TOURNAMENT.b_division_is_finalized %}
                     {% trans "Final results of B division" %}
                 {% else %}
                     {% trans "Standings in B division" %}
@@ -40,12 +40,12 @@
         {% endif %}
 
         {% if standings %}
-            {% if request.GET.division == "A" and not active_tournament.a_division_is_finalized %}
+            {% if request.GET.division == "A" and not TOURNAMENT.a_division_is_finalized %}
                 <div class="alert alert-primary" role="alert">
                     {% trans "Please note that the results aren't finalized yet." %} <a href="{% url "matches" %}">{% trans "View playoff matches" %}<a>
                 </div>
             {% endif %}
-            {% if request.GET.division == "B" and not active_tournament.b_division_is_finalized %}
+            {% if request.GET.division == "B" and not TOURNAMENT.b_division_is_finalized %}
                 {% comment %} damn you django templates for being so simplistic, duplicated html/text from just above {% endcomment %}
                 <div class="alert alert-primary" role="alert">
                     {% trans "Please note that the results aren't finalized yet." %} <a href="{% url "matches" %}">{% trans "View playoff matches" %}<a>
@@ -56,14 +56,14 @@
     {% endif %}
     {% if not request.GET.division %}
         {% if not TOURNAMENT.playoffs_are_active %}
-            <h1>{% trans "Standings in" %} {{ active_tournament.name }}</h1>
+            <h1>{% trans "Standings in" %} {{ TOURNAMENT.name }}</h1>
         {% else %}
-            <h1>{% trans "Qualification standings in" %} {{ active_tournament.name }}</h1>
+            <h1>{% trans "Qualification standings in" %} {{ TOURNAMENT.name }}</h1>
         {% endif %}
         <div class="alert alert-primary" role="alert">
             <h5>{% trans "Info" %}</h5>
             <small>
-            - {% trans "The high score entries run from" %}: <strong>{{ active_tournament.start_date|date:"d M Y H:i" }}</strong> {% trans "to" %}: <strong>{{ active_tournament.end_date|date:"d M Y H:i" }}</strong>
+            - {% trans "The high score entries run from" %}: <strong>{{ TOURNAMENT.start_date|date:"d M Y H:i" }}</strong> TOURNAMENT{% trans "to" %}: <strong>{{ TOURNAMENT.end_date|date:"d M Y H:i" }}</strong>
             <br />
             - {% trans "The following points are awared on the games: " %}
             {% for point in points %}
@@ -137,7 +137,7 @@
             {% endifchanged %}
             <tr class="{% cycle 'row1' 'row2' %}">
                 <td><strong>{{ standing.position }}</strong></td>
-                <td><a href="{{ standing.player.get_url }}">{{ standing.player.get_initials_and_name }}</a></td>
+                <td><a href="{% get_player_url standing.player TOURNAMENT %}">{{ standing.player.get_initials_and_name }}</a></td>
                 <td><i class="{{ standing.player.country.flag_css }}"></i></td>
                 {% if has_tiebreak_points %}
                     <td>

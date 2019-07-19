@@ -15,7 +15,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         round = 1
         matches_in_round = []
-        for match in Match.objects.get_active_matches():
+        tournament = Tournament.objects.get(is_active=True)
+        for match in Match.objects.get_active_matches(tournament):
             matches_in_round.append(match)
             if match.round != round:
                 print("SHISH: %s" % match.round)

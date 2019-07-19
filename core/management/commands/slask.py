@@ -7,7 +7,7 @@ from pprint import pprint
 
 from django.core.management import BaseCommand
 
-from core.models import TournamentManager, Game, Tournament, Player, Score, Match
+from core.models import Game, Tournament, Player, Score, Match
 
 
 def roundup(x):
@@ -23,4 +23,4 @@ class Command(BaseCommand):
         tournament = Tournament.objects.get(is_active=True)
         tournament.playoff_matches_are_created = False
         tournament.save()
-        #Match.objects.create_playoff_matches()
+        #Match.objects.create_playoff_matches(tournament)

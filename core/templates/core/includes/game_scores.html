@@ -20,8 +20,8 @@
 {% endif %}
 
 {% if display_score_links %}
-    <a href="{% url "latest_scores" %}">{% trans "Latest scores" %}</a>
-     | <a href="{% url "top_scores" %}">{% trans "Top scores" %}</a>
+    <a href="{% url 'latest_scores' %}?{{ request.GET.urlencode }}">{% trans "Latest scores" %}</a>
+    | <a href="{% url 'top_scores' %}?{{ request.GET.urlencode }}">{% trans "Top scores" %}</a>
 {% endif %}
 
 <div class="tiny-spacer"></div>
@@ -82,7 +82,7 @@
                         {% if game.is_canceled %}
                             <del>
                         {% endif %}
-                        <a href="{{ game_score.player.get_url }}">{{ game_score.player.get_initials_and_name }}</a>
+                        <a href="{% get_player_url game_score.player TOURNAMENT %}">{{ game_score.player.get_initials_and_name }}</a>
                         {% if game.is_canceled %}
                             </del>
                         {% endif %}
