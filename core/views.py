@@ -302,7 +302,7 @@ class TournamentsView(TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        tournaments = Tournament.objects.all()
+        tournaments = Tournament.objects.all().order_by("-id")
         context["tournaments"] = tournaments
 
         return context

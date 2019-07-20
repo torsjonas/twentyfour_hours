@@ -17,7 +17,7 @@
     {% for tournament in tournaments %}
         <tr>
             <td><a href="/?tournament={{ tournament.id }}">{{ tournament.name }}</a></td>
-            <td><a href="/?tournament={{ tournament.id }}">{{ tournament.start_date }}</a></td>
+            <td><a href="/?tournament={{ tournament.id }}">{{ tournament.start_date|date:"Y-m-d" }}</a></td>
             <td><a href="/?tournament={{ tournament.id }}">{{ tournament.is_active }}</a></td>
         </tr>
     {% endfor %}
