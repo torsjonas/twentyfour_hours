@@ -29,6 +29,11 @@ function numberWithSpaces(x) {
 
 function showScoreGraph (data) {
     if (!data || data.length === 0) {
+        Highcharts.chart('modalScoreGraphContainer', {
+            title: {
+                text: 'No Registered Scores'
+            }
+        });
         return;
     }
 
