@@ -5,11 +5,12 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.core.exceptions import ValidationError, PermissionDenied
 from django.forms import TextInput, ModelForm, CharField, BooleanField
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView, CreateView, DetailView
+from django.views import View
 
 from core.models import Player, Score, Game, Tournament, Points, Match, KeyValue
 
@@ -306,3 +307,37 @@ class TournamentsView(TemplateView):
         context["tournaments"] = tournaments
 
         return context
+
+class GamesView(TemplateView):
+    template_name = "core/games.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        games = Game.objects.all()
+        context["games"] = games
+
+        return context
+
+class GameScoreJSONView(View):
+    def get(self, request, *args, **kwargs):
+        game_id = request.GET.get("game")
+        if not game_id:
+            return JsonResponse({})
+
+        game = get_object_or_None(Game, id=game_id)
+        if not game:
+            return JsonResponse({})
+
+        game_scores = Score.objects.filter(game=game).order_by("-date_created")
+        game_scores_list = []
+        for game_score in game_scores:
+            game_scores_list.append({
+                "game": game.name,
+                "score": game_score.score,
+                "date": game_score.date_created,
+                "playerInitials": game_score.player.initials
+            })
+        response = {
+            "data": game_scores_list
+        }
+        return JsonResponse(response, safe=False)
