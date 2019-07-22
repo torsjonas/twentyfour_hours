@@ -59,9 +59,9 @@
             </tr>
         {% endifchanged %}
         <tr class="{% cycle 'row1' 'row2' %}">
-            <td><a href="{{ get_player_url match.player1 TOURNAMENT }}">{{ match.player1.get_initials_and_name }}</a></td>
+            <td><a href="{% get_player_url match.player1 TOURNAMENT %}">{{ match.player1.get_initials_and_name }}</a></td>
             <td><small>{% trans "vs." %}</small></td>
-            <td><a href="{{ get_player_url match.player2 TOURNAMENT }}">{{ match.player2.get_initials_and_name }}</a></td>
+            <td><a href="{% get_player_url match.player2 TOURNAMENT %}">{{ match.player2.get_initials_and_name }}</a></td>
             {% if TOURNAMENT.is_multiple_division  %}
                 <td>{{ match.division }}</td>
             {% endif %}
@@ -70,7 +70,7 @@
                 {% if not match.winner %}
                     <small>{% trans "N/A" %}</small>
                 {% else %}
-                    <a href="{{ get_player_url match.winner TOURNAMENT }}">{{ match.winner.get_initials_and_name }}</a>
+                    <a href="{% get_player_url match.winner TOURNAMENT %}">{{ match.winner.get_initials_and_name }}</a>
                 {% endif %}
             </td>
             {% if request.user.is_staff %}

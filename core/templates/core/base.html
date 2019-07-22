@@ -71,7 +71,7 @@
                 {% endif %}
                 {% if TOURNAMENT.playoffs_are_active %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'matches' %}">{% trans "Playoff matches" %}</a>
+                        <a class="nav-link" href="{% url 'matches' %}?tournament={{ TOURNAMENT.id }}">{% trans "Playoff matches" %}</a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
